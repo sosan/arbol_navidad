@@ -5,7 +5,7 @@
 
 """
 
-from flask import Flask
+from flask import Flask, session
 from flask import render_template
 from flask import request
 from flask import redirect
@@ -17,6 +17,7 @@ from TemplateFormularios.Admin import *
 # inicializacion e instanciacion
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
+app.secret_key = "sescreto"
 
 
 @app.route("/admin", methods=["GET"])
@@ -31,14 +32,27 @@ def admin_profile():
 
 @app.route("/admin_profile/alta", methods=["GET"])
 def alta_producto():
-    template_registrar_producto = FormularioRellanarProducto()
+    template_registrar_producto = FormularioRellanarProducto(request.form)
+    registrado_ok = False
 
-    return render_template("altaproducto.html", formulario=template_registrar_producto)
+    if "registrado_ok" in session and "nombreproducto" in session:
+        registrado_ok = session["registrado_ok"]
+        if registrado_ok == True:
+            session["registrado_ok"] = False
+
+            return render_template("altaproducto.html", formulario=template_registrar_producto, ok=registrado_ok,
+                                   nombreproducto=session["nombreproducto"])
+
+    return render_template("altaproducto.html", formulario=template_registrar_producto, ok=registrado_ok,
+                           nombreproducto="")
+
 
 @app.route("/admin_profile/alta", methods=["POST"])
-def alta_producto():
+def recibirdatos_alta_producto():
     template_registrar_producto = FormularioRellanarProducto(request.form)
-
+    if template_registrar_producto.validate():
+        session["registrado_ok"] = True
+        session["nombreproducto"] = request.form["nombreproducto"]
 
     return redirect(url_for("alta_producto"))
 

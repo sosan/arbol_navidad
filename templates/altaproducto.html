@@ -1,10 +1,21 @@
 {% extends "base_admin.html" %}
+{% block title %} {{ super() }} ALTA PRODUCTO {% endblock %}
 {% block content %}
     <div class="container">
-    <h1>MENU ALTA</h1>
+    <h1>ALTA PRODUCTO</h1>
+
+    {% if ok == True %}
+        <div class="alert alert-success" id="success-alert">
+          Producto {{ nombreproducto }} dado de alta correctamente
+        </div>
+    {% else %}
+        <div class="alert alert-success" id="success-alert" style="display: block; opacity: 0;">
+          &nbsp;
+        </div>
+    {% endif %}
 
 {% if formulario %}
-    <form action="{{ url_for("") }}" method="post">
+    <form action="{{ url_for("alta_producto") }}" method="post">
         {% for campoform in formulario %}
             <div class="text-left">{{ campoform.label }}</div>
             {% if campoform.type == "StringField" %}
@@ -14,9 +25,31 @@
             {% endif %}
             <br>
         {% endfor %}
+    <button type="submit" class="img-rounded">Registrar Producto</button>
     </form>
 {% endif %}
 
     </div>
 {{ super() }}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+
+    var productoname = {% if ok == True %}true{% else %}false{% endif %};
+
+    $(document).ready(function()
+    {
+        {#$("#success-alert").hide();#}
+        if (productoname)
+        {
+
+            $("#success-alert").fadeTo(2000, 500).animate({opacity:0});;
+
+        }
+
+
+    });
+    </script>
 {% endblock %}

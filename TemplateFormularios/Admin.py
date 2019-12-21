@@ -25,8 +25,7 @@ class FormularioRellanarProducto(Form):
         validators.data_required(message="Este campo es requerido"),
     ], description="Nombre Producto")
 
-
-    urlproducto =  URLField(label="URL Producto:", validators=[
+    urlproducto = URLField(label="URL Producto:", validators=[
         validators.data_required(message="Este campo es requerido"),
     ], description="Url Producto")
 

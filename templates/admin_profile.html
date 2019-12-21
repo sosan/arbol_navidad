@@ -1,0 +1,11 @@
+{% extends "base_admin.html" %}
+
+{% block content %}
+    <a href="{{ url_for("alta_producto") }}">1. Alta producto</a>
+    <a href="{{ url_for("baja_producto") }}">2. Baja producto</a>
+    <a href="{{ url_for("ver_productos") }}">3. Ver productos</a>
+{% endblock %}
+
+{% block footer %}
+    {{ super() }}
+{% endblock %}

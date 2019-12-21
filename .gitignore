@@ -69,6 +69,8 @@ instance/
 
 # Adobe stuff
 *.psd
+psd/
+psds/
 
 # Scrapy stuff:
 .scrapy

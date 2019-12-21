@@ -1,9 +1,18 @@
 {% extends "base_admin.html" %}
 
 {% block content %}
-    <a href="{{ url_for("alta_producto") }}">1. Alta producto</a>
-    <a href="{{ url_for("baja_producto") }}">2. Baja producto</a>
-    <a href="{{ url_for("ver_productos") }}">3. Ver productos</a>
+    <div class="container">
+    <h1 class="text-left">MENU ADMIN</h1>
+        <BR><BR>
+        <div class="text-left">
+            <div class="row"><a href="{{ url_for("alta_producto") }}">1. Alta producto</a></div>
+            <div class="row"><a href="{{ url_for("baja_producto") }}">2. Baja producto</a></div>
+            <div class="row"><a href="{{ url_for("ver_productos") }}">3. Ver productos</a></div>
+        </div>
+
+
+    </div>
+
 {% endblock %}
 
 {% block footer %}

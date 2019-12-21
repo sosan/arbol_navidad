@@ -1,6 +1,22 @@
 {% extends "base_admin.html" %}
 {% block content %}
-{% endblock %}
-{% block footer %}
-    {{ super() }}
+    <div class="container">
+    <h1>MENU ALTA</h1>
+
+{% if formulario %}
+    <form action="{{ url_for("") }}" method="post">
+        {% for campoform in formulario %}
+            <div class="text-left">{{ campoform.label }}</div>
+            {% if campoform.type == "StringField" %}
+                <div class="input-sm">{{ campoform(placeholder=campoform.description) }}</div>
+            {% elif campoform.type == "URLField" %}
+                <div class="input-sm">{{ campoform(size="40", placeholder=campoform.description) }}</div>
+            {% endif %}
+            <br>
+        {% endfor %}
+    </form>
+{% endif %}
+
+    </div>
+{{ super() }}
 {% endblock %}

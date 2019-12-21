@@ -31,7 +31,16 @@ def admin_profile():
 
 @app.route("/admin_profile/alta", methods=["GET"])
 def alta_producto():
-    return render_template("altaproducto.html")
+    template_registrar_producto = FormularioRellanarProducto()
+
+    return render_template("altaproducto.html", formulario=template_registrar_producto)
+
+@app.route("/admin_profile/alta", methods=["POST"])
+def alta_producto():
+    template_registrar_producto = FormularioRellanarProducto(request.form)
+
+
+    return redirect(url_for("alta_producto"))
 
 
 @app.route("/admin_profile/baja", methods=["GET"])

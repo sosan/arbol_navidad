@@ -21,20 +21,18 @@ import re
 # existeenum = ExisteEnum()
 
 class FormularioRellanarProducto(Form):
-    nombreproducto = StringField(validators=[
+    nombreproducto = StringField(label="Nombre Producto:", validators=[
         validators.data_required(message="Este campo es requerido"),
+    ], description="Nombre Producto")
 
-    ], description="Nombre Producto:")
 
-    urlproducto =  URLField(validators=[
+    urlproducto =  URLField(label="URL Producto:", validators=[
         validators.data_required(message="Este campo es requerido"),
+    ], description="Url Producto")
 
-    ], description="Url Producto:")
-
-    urlimagenproducto = URLField(validators=[
+    urlimagenproducto = URLField(label="URL IMAGEN Producto:", validators=[
         validators.data_required(message="Este campo es requerido"),
-
-    ], description="Url Imagen Producto:")
+    ], description="Url Imagen Producto")
 
 
 class FormularioLogin(Form):

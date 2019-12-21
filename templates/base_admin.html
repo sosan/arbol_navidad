@@ -7,10 +7,14 @@
 <link rel="icon" href="{{ url_for("static", filename="images/favicon.ico") }}">
 {% endblock %}
 
+<body>
 {% block content %}
+    <div class="container">
+        <br><br>
+        <a href="{{ url_for("admin_profile") }}">[ HOME ]</a>
+    </div>
 
 {% endblock %}
-{% block footer %}
-    <br><br>
-    <a href="{{ url_for("admin_profile") }}">[ HOME ]</a>
-{% endblock %}
+
+
+</body>

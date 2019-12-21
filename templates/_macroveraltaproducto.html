@@ -1,0 +1,30 @@
+{% macro rellenarCamposRegistro(campoTemplate) %}
+    {% if campoTemplate.type == "HiddenField" %}
+        {{ campoTemplate }}
+    {% elif campoTemplate.type == "BooleanField" %}
+        <div class="input-group">
+            <div class="form-control">{{campoTemplate.description}} {{ campoTemplate }}</div>
+        </div>
+
+        {% if campoTemplate.errors %}
+            {% for error in campoTemplate.errors %}
+            <h6 class="alert-danger">{{ error | e }}</h6>
+            {% endfor %}
+        {% endif %}
+    {% else %}
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1">@</span>
+            {% if emailanterior %}
+                {{ campoTemplate(class="form-control", placeholder=campoTemplate.description, value=emailanterior) | safe }}
+            {% else %}
+                {{ campoTemplate(class="form-control", placeholder=campoTemplate.description) | safe }}
+            {% endif %}
+        </div>
+
+        {% if campoTemplate.errors %}
+            {% for error in campoTemplate.errors %}
+            <h6 class="alert-danger">{{ error | e }}</h6>
+            {% endfor %}
+        {% endif %}
+{% endif %}
+{% endmacro %}

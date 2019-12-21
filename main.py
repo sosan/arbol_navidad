@@ -11,7 +11,7 @@ from flask import request
 from flask import redirect
 from flask import url_for
 from flask_bootstrap import Bootstrap
-from ModuloMongo.MongoManger import managermongo
+from ModuloMongo.mongomanager import managermongo
 from TemplateFormularios.Admin import *
 
 # inicializacion e instanciacion
@@ -53,6 +53,11 @@ def recibirdatos_alta_producto():
     if template_registrar_producto.validate():
         session["registrado_ok"] = True
         session["nombreproducto"] = request.form["nombreproducto"]
+
+        managermongo.crearproducto(request.form["nombreproducto"],
+                                   request.form["urlproducto"],
+                                   request.form["urlimagenproducto"]
+                                   )
 
     return redirect(url_for("alta_producto"))
 

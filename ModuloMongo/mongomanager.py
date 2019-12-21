@@ -30,13 +30,12 @@ class ManagerMongoDb:
             return datos
         return None
 
-    def crearnota(self, titulo, nota):
-        # fecha = "{0}-{1}-{2}" .format(datetime.now().year, datetime.now().month,  datetime.now().day)
-
+    def crearproducto(self, nombreproducto, urlproducto, urlimagenproducto):
         fecha = datetime.utcnow()
 
         ok = self.cursor.insert_one(
-            {"titulo": titulo, "nota": nota, "fecha": fecha, "fecha_mod": fecha, "modificado": False})
+            {"nombreproducto": nombreproducto, "urlproducto": urlproducto, "urlimagenproducto": urlimagenproducto,
+             "fecha": fecha, "fecha_mod": fecha, "modificado": False})
         if ok.inserted_id != None:
             return True
         return False

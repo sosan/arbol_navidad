@@ -5,10 +5,12 @@ from datetime import datetime
 from pymongo.collection import Collection
 from pymongo.database import Database
 from pymongo.errors import ConnectionFailure
+from ModuloWeb.managerWeb import ManagerWeb
 
 
 class ManagerMongoDb:
     def __init__(self):
+        self.managerweb = ManagerWeb()
         self.MONGO_URL = "mongodb+srv://{0}:{1}@{2}"
         self.cliente: MongoClient = None
         self.db: Database = None
@@ -32,10 +34,20 @@ class ManagerMongoDb:
 
     def crearproducto(self, nombreproducto, urlproducto, urlimagenproducto):
         fecha = datetime.utcnow()
+        urlimagenproducto, h, v = self.managerweb.getProducto(urlproducto)
 
         ok = self.cursor.insert_one(
-            {"nombreproducto": nombreproducto, "urlproducto": urlproducto, "urlimagenproducto": urlimagenproducto,
-             "fecha": fecha, "fecha_mod": fecha, "modificado": False})
+            {
+                "fecha": fecha,
+                "fecha_mod": fecha,
+                "nombreproducto": nombreproducto,
+                "urlproducto": urlproducto,
+                "urlimagenproducto": urlimagenproducto,
+                "h": h,
+                "v": v,
+                "modificado": False
+            }
+        )
         if ok.inserted_id != None:
             return True
         return False

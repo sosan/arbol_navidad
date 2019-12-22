@@ -11,38 +11,39 @@ import doctest
 
 class ManagerWeb:
     def __init__(self):
-        self.dic_meses = {
-            "enero": 1,  "febrero": 2,  "marzo": 3,  "abril": 4, "mayo": 5, "junio": 6,
-            "julio": 7, "agosto": 8,  "septiembre": 9,  "octubre": 10,  "noviembre": 11, "diciembre": 12,
-            1: "enero", 2: "febrero",  3: "marzo",  4: "abril", 5: "mayo",  6: "junio",
-            7: "julio",  8: "agosto", 9: "septiembre",  10: "octubre", 11: "noviembre", 12: "diciembre"
-        }
-        self.URL_PELICULAS_HD = "https://dontorrent.org/descargar-peliculas/hd"
-        self.URL_SERIES = "https://dontorrent.org/descargar-series"
-        self.URL_GOOGLE = "https://www.google.com/search?q="
-        self.URL_AFINITY = "https://www.filmaffinity.com/es/advsearch2.php?q="
-        self.URL_API_AFINITY = "https://api-filmaffinity.herokuapp.com/api/busqueda/"
-        self.prefix_dontorrent = "https://dontorrent.org"
+        # self.dic_meses = {
+        #     "enero": 1,  "febrero": 2,  "marzo": 3,  "abril": 4, "mayo": 5, "junio": 6,
+        #     "julio": 7, "agosto": 8,  "septiembre": 9,  "octubre": 10,  "noviembre": 11, "diciembre": 12,
+        #     1: "enero", 2: "febrero",  3: "marzo",  4: "abril", 5: "mayo",  6: "junio",
+        #     7: "julio",  8: "agosto", 9: "septiembre",  10: "octubre", 11: "noviembre", 12: "diciembre"
+        # }
+        # self.URL_PELICULAS_HD = "https://dontorrent.org/descargar-peliculas/hd"
+        # self.URL_SERIES = "https://dontorrent.org/descargar-series"
+        # self.URL_GOOGLE = "https://www.google.com/search?q="
+        # self.URL_AFINITY = "https://www.filmaffinity.com/es/advsearch2.php?q="
+        # self.URL_API_AFINITY = "https://api-filmaffinity.herokuapp.com/api/busqueda/"
+        # self.prefix_dontorrent = "https://dontorrent.org"
         self.web = HTMLSession()
 
         # self.peliculas = None
         # self.series = None
 
-    def getPeliculas(self):
-        peliculas = self.web.get(self.URL_PELICULAS_HD)
+    def getProducto(self, urlproducto):
+        producto = self.web.get(urlproducto)
         lista = []
 
-        seleccion = "body > div.container > div.row > div.col-lg > div.noticias > " \
-                    "div.position-relative > div.card.shadow.noticia > div.card-body > div.noticiasContent"
+        seleccion = "div#product-image-placer"
+        urlimagen = producto.html.find(seleccion)
+
         #
         # El miércoles día 04 de diciembre
-        fechas = list(peliculas.html.find(seleccion))
+        fechas = list(producto.html.find(seleccion))
         #fechas[i].links
         # selecciond = "body > div.container > div.row > div.col-lg > div.noticias > " \
         #              "div.position-relative > div.card.shadow.noticia > div.card-body > div.noticiasContent > " \
         #              "div.text-center"
         #
-        # links = list(peliculas.html.find(selecciond))
+        # links = list(producto.html.find(selecciond))
 
         for i in range(0, len(fechas)):
             fecha = self.getfechas(fechas[i].text)

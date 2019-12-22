@@ -93,7 +93,9 @@ def home():
 
     }
 
-    productos = managerlogica.getproductos()
+    ok, productos = managerlogica.getproductos()
+    if ok == True:
+        return render_template("index.html", datos=productos, max=len(productos))
 
     return render_template("index.html")
 

@@ -72,9 +72,9 @@ class ManagerMongoDb:
             return 1
         return 0
 
-    def modificarnota(self, id, titulo, nota):
+    def modificarnota(self, ide, titulo, nota):
 
-        resultados = self.cursor.find_one({"_id": ObjectId(id)})
+        resultados = self.cursor.find_one({"_id": ObjectId(ide)})
 
         if len(resultados) > 0:
             fecha_current = datetime.utcnow()
@@ -87,10 +87,29 @@ class ManagerMongoDb:
                     "modificado": True
                 }
 
-                ok = self.cursor.update_one({"_id": ObjectId(id)}, {"$set": contenido})
+                ok = self.cursor.update_one({"_id": ObjectId(ide)}, {"$set": contenido})
                 if ok.modified_count > 0:
                     return True
         return False
+
+    def getcantidadproductos(self):
+        resultados = self.cursorAyudas.find_one({"_id": "contador"}, {"_id": False})
+        if resultados == None:
+            return False
+        return True, resultados["cantidadproductos"]
+
+    def getproductosbyid(self, ides):
+
+        patron = []
+        for i in range(0, len(ides)):
+            patron.append({"_id": ides[i]})
+
+        ok, resultados = self.cursor.find(patron)
+        if ok == False:
+            return False
+
+        return resultados
+
 
 
 managermongo = ManagerMongoDb()

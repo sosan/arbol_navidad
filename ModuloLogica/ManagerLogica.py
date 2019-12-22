@@ -1,6 +1,7 @@
 from datetime import datetime
 import ModuloWeb.managerWeb
 import ModuloMongo.mongomanager
+import random
 
 
 class ManagerLogica:
@@ -28,3 +29,20 @@ class ManagerLogica:
                                             nombreproducto, urlproducto, urlimagenproducto, h, v)
 
         return ok
+
+    def getproductos(self, cantidadproductos, productosrelleno):
+        ok, maxcantidad = self.managermongo.getcantidadproductos()
+        # 3 * 3
+        cantidadproductos = cantidadproductos * productosrelleno
+        if ok == False:
+            return False
+
+        listaids = []
+        for i in range(0, cantidadproductos):
+            listaids.append(random.randint(0, maxcantidad))
+
+        ok, resultados = self.managermongo.getproductosbyid(listaids)
+        if ok == False:
+            return False
+
+        return resultados

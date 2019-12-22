@@ -2,12 +2,14 @@
 
 {% block content %}
     <div class="container ">
-    <div class="vertical-align ">
+        <div class="vertical-align ">
+        <img src="{{ url_for("static", filename="images/arbol.svg") }}" class="center-block ">
+        </div>
+    {% if datos %}
+        {% for i in range(0, max) %}
 
-    <img src="{{ url_for("static", filename="images/arbol.svg") }}" class="center-block ">
-
-    </div>
-
+        {% endfor %}
+    {% endif %}
 
     </div>
 

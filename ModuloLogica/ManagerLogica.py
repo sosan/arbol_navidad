@@ -43,14 +43,16 @@ class ManagerLogica:
         while totalmatriz > len(setids):
             setids.add(random.randint(1, maxcantidad))
 
-        posicion_productosprincipales = set()
-        while cantidadproductos > len(posicion_productosprincipales):
-            posicion_productosprincipales.add(random.randint(0, len(setids)))
-
-
         listadoids = list(setids)
+
         resultados = self.managermongo.getproductosbyid(listadoids)
         if resultados == None:
             return None
 
-        return resultados, posicion_productosprincipales
+        productosprincipales = []
+        while cantidadproductos > len(productosprincipales):
+            rndpos = random.randint(0, len(resultados))
+            q = resultados.pop(rndpos)
+            productosprincipales.append(q)
+
+        return resultados, productosprincipales

@@ -2,7 +2,7 @@ import locale
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from datetime import datetime
-from pymongo.collection import Collection
+from pymongo.collection import Collection, ReturnDocument
 from pymongo.database import Database
 from pymongo.errors import ConnectionFailure
 import ModuloWeb.managerWeb  # evitar circle imports
@@ -15,13 +15,14 @@ class ManagerMongoDb:
         self.cliente: MongoClient = None
         self.db: Database = None
         self.cursor: Collection = None
-        self.prefixeditado = "(EDITADO)"
+        self.cursorAyudas: Collection = None
 
     def conectDB(self, usuario, password, host, db, coleccion):
         try:
             self.cliente = MongoClient(self.MONGO_URL.format(usuario, password, host), ssl_cert_reqs=False)
             self.db = self.cliente[db]
             self.cursor = self.db[coleccion]
+            self.cursorAyudas = self.db["ayudas"]
         except ConnectionFailure:
             raise Exception("Servidor no disponible")
 
@@ -35,12 +36,29 @@ class ManagerMongoDb:
     def crearproducto(self, nombreproducto, urlproducto):
         fecha = datetime.utcnow()
         # return True, urlimagen, dimensiones[0], dimensiones[1]
-        ok, urlimagenproducto, h, v = self.managerweb.getProducto(urlproducto)
+        ok, urlimagenproducto, ht, vt = self.managerweb.getProducto(urlproducto)
         if ok == False:
+            return False
+        try:
+            h = int(int(ht) // 4)
+            v = int(int(vt) // 4)
+        except ValueError:
+            raise Exception("No se ha podido convertir en int ht={0} vt={1}".format(ht, vt))
+
+        id_autoincremental = self.cursorAyudas.find_one_and_update(
+            {"_id": "contador"},
+            {"$inc": {"cantidadproductos": 1}},
+            projection={"_id": False},
+            upsert=True,
+            return_document=ReturnDocument.AFTER
+
+        )
+        if id_autoincremental is None:
             return False
 
         ok = self.cursor.insert_one(
             {
+                "_id": id_autoincremental["cantidadproductos"],
                 "fecha": fecha,
                 "fecha_mod": fecha,
                 "nombreproducto": nombreproducto,

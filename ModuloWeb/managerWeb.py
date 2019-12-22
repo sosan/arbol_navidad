@@ -29,7 +29,7 @@ class ManagerWeb:
     def getProducto(self, urlproducto):
         producto = self.web.get(urlproducto)
         lista = []
-
+        # demasiado lento, quizas por ruta mas rapido???
         seleccion = "img#product-image-placer"
         urlimagen = list(producto.html.find(seleccion))
         if len(urlimagen) > 0:

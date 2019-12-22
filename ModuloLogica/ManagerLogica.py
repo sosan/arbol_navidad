@@ -32,17 +32,25 @@ class ManagerLogica:
 
     def getproductos(self, cantidadproductos, productosrelleno):
         ok, maxcantidad = self.managermongo.getcantidadproductos()
+        if ok == False:
+            return False
+
         # 3 * 3
-        cantidadproductos = cantidadproductos * productosrelleno
-        if ok == False:
-            return False
+        totalmatriz = cantidadproductos * productosrelleno
 
-        listaids = []
-        for i in range(0, cantidadproductos):
-            listaids.append(random.randint(0, maxcantidad))
+        setids = set()
 
-        ok, resultados = self.managermongo.getproductosbyid(listaids)
-        if ok == False:
-            return False
+        while totalmatriz > len(setids):
+            setids.add(random.randint(1, maxcantidad))
 
-        return resultados
+        posicion_productosprincipales = set()
+        while cantidadproductos > len(posicion_productosprincipales):
+            posicion_productosprincipales.add(random.randint(0, len(setids)))
+
+
+        listadoids = list(setids)
+        resultados = self.managermongo.getproductosbyid(listadoids)
+        if resultados == None:
+            return None
+
+        return resultados, posicion_productosprincipales

@@ -5,12 +5,11 @@ from datetime import datetime
 from pymongo.collection import Collection, ReturnDocument
 from pymongo.database import Database
 from pymongo.errors import ConnectionFailure
-import ModuloWeb.managerWeb  # evitar circle imports
 
 
 class ManagerMongoDb:
     def __init__(self):
-        self.managerweb = ModuloWeb.managerWeb.ManagerWeb()
+
         self.MONGO_URL = "mongodb+srv://{0}:{1}@{2}"
         self.cliente: MongoClient = None
         self.db: Database = None
@@ -99,15 +98,10 @@ class ManagerMongoDb:
         return True, resultados["cantidadproductos"]
 
     def getproductosbyid(self, ides):
-
-        patron = []
-        for i in range(0, len(ides)):
-            patron.append({"_id": ides[i]})
-
-        ok, resultados = self.cursor.find(patron)
-        if ok == False:
-            return False
-
+        patron = {"_id": {"$in": ides}}
+        resultados = list(self.cursor.find(patron))
+        if len(resultados) <= 0:
+            return None
         return resultados
 
 

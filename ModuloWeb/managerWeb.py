@@ -33,10 +33,20 @@ class ManagerWeb:
         seleccion = "img#product-image-placer"
         urlimagen = list(producto.html.find(seleccion))
         if len(urlimagen) > 0:
+            # //sgfm.elcorteingles.es/SGFM/dctm/MARKET/843/557/832/843557832826300_WWW_516x640.jpg
             # //sgfm.elcorteingles.es/SGFM/dctm/MEDIA03/201908/23/00125940611046____2__640x640.jpg
-            url: str = urlimagen[0].attrs["src"]
-            dimensiones: str = url.split("__")[3].split(".")[0].split("x")
-            return True, url, dimensiones[0], dimensiones[1]
+            # //sgfm.elcorteingles.es/SGFM/dctm/MEDIA02/CONTENIDOS/201601/15/00119522649367____5__516x640.jpg
+            url = urlimagen[0].attrs["src"]
+            try:
+                # dimensiones: list[str] = url.split("__")[3].split(".")[0].split("x")
+                separaciones = url.split("x")
+                h = separaciones[0][-3:]
+                v = separaciones[1].split(".")[0]
+
+            except IndexError:
+                pass
+
+            return True, url, h, v
         return False
 
         #

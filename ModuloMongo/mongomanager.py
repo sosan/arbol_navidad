@@ -5,12 +5,12 @@ from datetime import datetime
 from pymongo.collection import Collection
 from pymongo.database import Database
 from pymongo.errors import ConnectionFailure
-from ModuloWeb.managerWeb import ManagerWeb
+import ModuloWeb.managerWeb  # evitar circle imports
 
 
 class ManagerMongoDb:
     def __init__(self):
-        self.managerweb = ManagerWeb()
+        self.managerweb = ModuloWeb.managerWeb.ManagerWeb()
         self.MONGO_URL = "mongodb+srv://{0}:{1}@{2}"
         self.cliente: MongoClient = None
         self.db: Database = None
@@ -32,9 +32,12 @@ class ManagerMongoDb:
             return datos
         return None
 
-    def crearproducto(self, nombreproducto, urlproducto, urlimagenproducto):
+    def crearproducto(self, nombreproducto, urlproducto):
         fecha = datetime.utcnow()
-        urlimagenproducto, h, v = self.managerweb.getProducto(urlproducto)
+        # return True, urlimagen, dimensiones[0], dimensiones[1]
+        ok, urlimagenproducto, h, v = self.managerweb.getProducto(urlproducto)
+        if ok == False:
+            return False
 
         ok = self.cursor.insert_one(
             {

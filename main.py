@@ -49,15 +49,20 @@ def alta_producto():
 
 @app.route("/admin_profile/alta", methods=["POST"])
 def recibirdatos_alta_producto():
+    if request.method == "GET":
+        return redirect(url_for("alta_producto"))
+
     template_registrar_producto = FormularioRellanarProducto(request.form)
     if template_registrar_producto.validate():
-        session["registrado_ok"] = True
-        session["nombreproducto"] = request.form["nombreproducto"]
 
-        managermongo.crearproducto(request.form["nombreproducto"],
-                                   request.form["urlproducto"],
-                                   request.form["urlimagenproducto"]
-                                   )
+        ok = managermongo.crearproducto(request.form["nombreproducto"],
+                                        request.form["urlproducto"]
+                                        )
+        if ok == True:
+            session["registrado_ok"] = True
+            session["nombreproducto"] = request.form["nombreproducto"]
+        else:
+            session["registrado_ok"] = False
 
     return redirect(url_for("alta_producto"))
 

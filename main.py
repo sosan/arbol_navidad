@@ -3,6 +3,8 @@
  CON ADMIN DONDE INTRODUCIR LOS DATOS.
  CON ADMIN CON SCRAPPING AUTOMATIZADO
 
+    NO sigue el modelo MVC 100% porque es demasiado corto,
+    la parte de interfaz ManagerLogica.py
 """
 
 from flask import Flask, session
@@ -11,13 +13,14 @@ from flask import request
 from flask import redirect
 from flask import url_for
 from flask_bootstrap import Bootstrap
-from ModuloMongo.mongomanager import managermongo
+from ModuloLogica.ManagerLogica import ManagerLogica
 from TemplateFormularios.Admin import *
 
 # inicializacion e instanciacion
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
 app.secret_key = "sescreto"
+managerlogica = ManagerLogica()
 
 
 @app.route("/admin", methods=["GET"])
@@ -55,9 +58,9 @@ def recibirdatos_alta_producto():
     template_registrar_producto = FormularioRellanarProducto(request.form)
     if template_registrar_producto.validate():
 
-        ok = managermongo.crearproducto(request.form["nombreproducto"],
-                                        request.form["urlproducto"]
-                                        )
+        ok = managerlogica.crearproducto(request.form["nombreproducto"],
+                                         request.form["urlproducto"]
+                                         )
         if ok == True:
             session["registrado_ok"] = True
             session["nombreproducto"] = request.form["nombreproducto"]
@@ -89,7 +92,8 @@ def home():
         "w": 200,
 
     }
-    #
+
+    productos = managerlogica.getproductos()
 
     return render_template("index.html")
 

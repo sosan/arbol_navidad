@@ -33,21 +33,10 @@ class ManagerMongoDb:
             return datos
         return None
 
-    def crearproducto(self, nombreproducto, urlproducto):
-        fecha = datetime.utcnow()
-        # return True, urlimagen, dimensiones[0], dimensiones[1]
-        ok, urlimagenproducto, ht, vt = self.managerweb.getProducto(urlproducto)
-        if ok == False:
-            return False
-        try:
-            h = int(int(ht) // 4)
-            v = int(int(vt) // 4)
-        except ValueError:
-            raise Exception("No se ha podido convertir en int ht={0} vt={1}".format(ht, vt))
-
+    def getid_autoincremental(self, idcontador, keyaumentar):
         id_autoincremental = self.cursorAyudas.find_one_and_update(
-            {"_id": "contador"},
-            {"$inc": {"cantidadproductos": 1}},
+            {"_id": idcontador},
+            {"$inc": {keyaumentar: 1}},
             projection={"_id": False},
             upsert=True,
             return_document=ReturnDocument.AFTER
@@ -56,9 +45,13 @@ class ManagerMongoDb:
         if id_autoincremental is None:
             return False
 
+        return True, id_autoincremental["cantidadproductos"]
+
+    def altaproducto(self, id_auto, fecha, nombreproducto, urlproducto, urlimagenproducto, h, v):
+
         ok = self.cursor.insert_one(
             {
-                "_id": id_autoincremental["cantidadproductos"],
+                "_id": id_auto,
                 "fecha": fecha,
                 "fecha_mod": fecha,
                 "nombreproducto": nombreproducto,

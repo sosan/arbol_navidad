@@ -26,7 +26,7 @@ class ManagerWeb:
         # self.peliculas = None
         # self.series = None
 
-    def getProducto(self, urlproducto):
+    def getProducto(self, urlproducto: str):
         producto = self.web.get(urlproducto)
         lista = []
         # demasiado lento, quizas por ruta mas rapido???
@@ -34,8 +34,8 @@ class ManagerWeb:
         urlimagen = list(producto.html.find(seleccion))
         if len(urlimagen) > 0:
             # //sgfm.elcorteingles.es/SGFM/dctm/MEDIA03/201908/23/00125940611046____2__640x640.jpg
-            url = urlimagen[0].attrs["src"]
-            dimensiones = url.split("__")[3].split(".")[0].split("x")
+            url: str = urlimagen[0].attrs["src"]
+            dimensiones: str = url.split("__")[3].split(".")[0].split("x")
             return True, url, dimensiones[0], dimensiones[1]
         return False
 

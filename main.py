@@ -85,12 +85,20 @@ def ver_productos():
 def home():
     # creamos un usuario para ese request
     if "id_request" in session:
+
         id_request = session["id_request"]
-        session.clear()
-
-
-        pass
-
+        id_resultado = session["id_resultado"]
+        try:
+            session.clear()
+        except KeyError:
+            return render_template("index.html")
+        ok, resultados = managerlogica.getcomprobacion(id_resultado, id_request)
+        if ok == True:
+            # hemos acertado
+            pass
+        else:
+            # hemos fallado
+            pass
 
     id_request = str(uuid.uuid4())
 
@@ -112,17 +120,11 @@ def recibirproductoseleccionado():
             id_resultado = int(request.form["id"])
         except ValueError:
             raise Exception("Conversion fallida {0}".format(request.form["id"]))
-        ok, resultados = managerlogica.getcomprobacion(id_resultado, request.form["id_request"])
+
         session["id_request"] = request.form["id_request"]
         session["id_resultado"] = id_resultado
-        if ok == True:
-            # hemos acertado
-            pass
-        else:
-            # hemos fallado
-            pass
-    # __METHOD_OVERRIDE__='POST',
-    return redirect(url_for("home"))
+
+    return redirect(url_for("home"))  # __METHOD_OVERRIDE__='POST',
 
 
 if __name__ == '__main__':

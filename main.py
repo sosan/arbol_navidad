@@ -84,6 +84,14 @@ def ver_productos():
 @app.route("/", methods=["GET"])
 def home():
     # creamos un usuario para ese request
+    if "id_request" in session:
+        id_request = session["id_request"]
+        session.clear()
+
+
+        pass
+
+
     id_request = str(uuid.uuid4())
 
     productosprincipales = managerlogica.getproductos(cantidadproductos=3, productosrelleno=3, id_request=id_request)
@@ -97,12 +105,24 @@ def home():
     return render_template("index.html")
 
 
-@app.route("/", methods=["POST"])
+@app.route("/tempruta", methods=["POST"])
 def recibirproductoseleccionado():
-    if "id" in request.form:
-        id = request.form["id"]
-
-        return render_template("index.html", victoria=victoria)
+    if "id" in request.form and "id_request" in request.form:
+        try:
+            id_resultado = int(request.form["id"])
+        except ValueError:
+            raise Exception("Conversion fallida {0}".format(request.form["id"]))
+        ok, resultados = managerlogica.getcomprobacion(id_resultado, request.form["id_request"])
+        session["id_request"] = request.form["id_request"]
+        session["id_resultado"] = id_resultado
+        if ok == True:
+            # hemos acertado
+            pass
+        else:
+            # hemos fallado
+            pass
+    # __METHOD_OVERRIDE__='POST',
+    return redirect(url_for("home"))
 
 
 if __name__ == '__main__':

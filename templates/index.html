@@ -9,7 +9,7 @@
                 {% set ns = namespace(countprincipales = 0) %}
                 {% set nsgrupos = namespace(countgrupos = 0) %}
                 {% for i in range(0, maxproductosprincipales) %}
-                    {% if i == 3 or i == 6 %}
+                    {% if i == 3 or i == 6 %} <!-- modificar -->
                         {% set nsgrupos.countgrupos = nsgrupos.countgrupos + 1 %}
                     {% endif %}
                     <form method="post" action="{{ url_for("recibirproductoseleccionado") }}">

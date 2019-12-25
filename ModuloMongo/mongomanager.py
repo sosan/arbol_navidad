@@ -113,26 +113,34 @@ class ManagerMongoDb:
 
         list_temp = []
         for i in range(0, len(resultados)):
+
+            dict_temp = {
+                "id_request": id_request,
+                "id_resultado": resultados[i]["_id"],
+                "fecha": resultados[i]["fecha"],
+                "fecha_mod": resultados[i]["fecha_mod"],
+                "nombreproducto": resultados[i]["nombreproducto"],
+                "urlproducto": resultados[i]["urlproducto"],
+                "urlimagenproducto": resultados[i]["urlimagenproducto"],
+                "h": resultados[i]["h"],
+                "v": resultados[i]["v"],
+                "modificado": resultados[i]["modificado"]
+            }
+
             if "principal" in resultados[i]:
-                dict_temp = {
-                    "id_request": id_request,
-                    "id_resultado": resultados[i]["_id"],
-                    "principal": resultados[i]["principal"],
-                    "urlimagenproducto": resultados[i]["urlimagenproducto"]
-                }
+                dict_temp["principal"] = resultados[i]["principal"]
             else:
-                dict_temp = {
-                    "id_request": id_request,
-                    "id_resultado": resultados[i]["_id"],
-                    "principal": False,
-                    "urlimagenproducto": resultados[i]["urlimagenproducto"]
-                }
+                dict_temp["principal"] = False
             list_temp.append(dict_temp)
 
         ok = self.cursorListadoRequests.insert_many(list_temp)
         if len(ok.inserted_ids) != len(resultados):
             return None
         return True
+
+    def getcomprobacion(self, id_resultado, id_request):
+        ok = list(self.cursorListadoRequests.find({"id_request": id_request}))
+        return ok
 
 
 managermongo = ManagerMongoDb()

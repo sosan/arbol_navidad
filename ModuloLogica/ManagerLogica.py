@@ -67,3 +67,10 @@ class ManagerLogica:
             return None
 
         return resultados
+
+    def getcomprobacion(self, id_resultado, id_request):
+        resultados = self.managermongo.getcomprobacion(id_resultado, id_request)
+        if len(resultados) > 0:
+            if resultados[id_resultado]["principal"] == True:
+                return True, resultados
+        return False, resultados

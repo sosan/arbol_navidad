@@ -13,6 +13,7 @@ from flask import request
 from flask import redirect
 from flask import url_for
 from flask_bootstrap import Bootstrap
+import uuid
 from ModuloLogica.ManagerLogica import ManagerLogica
 from TemplateFormularios.Admin import *
 
@@ -82,27 +83,26 @@ def ver_productos():
 
 @app.route("/", methods=["GET"])
 def home():
-    # elegir el producto de la lista de productos corte ingles
-    producto = {
-        "fecha_add": "",
-        "nombre": "",
-        "imagen": "",
-        "url": "",
-        "h": 400,
-        "w": 200,
+    # creamos un usuario para ese request
+    id_request = str(uuid.uuid4())
 
-    }
-
-    otrosproductos, productosprincipales = managerlogica.getproductos(cantidadproductos=3, productosrelleno=3)
-    if otrosproductos is not None:
-
+    productosprincipales = managerlogica.getproductos(cantidadproductos=3, productosrelleno=3, id_request=id_request)
+    if productosprincipales is not None:
         return render_template("index.html",
-                               otrosproductos=otrosproductos,
-                               maxotrosproductos=len(otrosproductos),
                                productosprincipales=productosprincipales,
-                               maxproductosprincipales=len(productosprincipales))
+                               maxproductosprincipales=len(productosprincipales),
+                               id_request=id_request
+                               )
 
     return render_template("index.html")
+
+
+@app.route("/", methods=["POST"])
+def recibirproductoseleccionado():
+    if "id" in request.form:
+        id = request.form["id"]
+
+        return render_template("index.html", victoria=victoria)
 
 
 if __name__ == '__main__':

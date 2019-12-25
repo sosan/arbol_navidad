@@ -1,23 +1,81 @@
 {% extends "base.html" %}
 
 {% block content %}
+
     <div class="container ">
-        <div class="vertical-align ">
-        <img src="{{ url_for("static", filename="images/arbol.svg") }}" class="center-block ">
-        </div>
-    {% if datos %}
-        {% for i in range(0, max) %}
-            {% if i in posicionproductos  %}
-                <!-- ESTAMOS CON ELEMENTO PRINCIPAL -->
+        <div class="vertical-align posicionarbol bounce-in-bck">
+            <img src="{{ url_for("static", filename="images/arbol.svg") }}" class="center-block ">
+            {% if productosprincipales %}
+                {% set ns = namespace(countprincipales = 0) %}
+                {% set nsgrupos = namespace(countgrupos = 0) %}
+                {% for i in range(0, maxproductosprincipales) %}
+                    {% if i == 3 or i == 6 %}
+                        {% set nsgrupos.countgrupos = nsgrupos.countgrupos + 1 %}
+                    {% endif %}
+                    <form method="post" action="{{ url_for("recibirproductoseleccionado") }}">
+                        <input type="hidden" name="id_request" value="{{ id_request }}">
+                        <input type="hidden" name="id" value="{{ productosprincipales[i]._id }}">
+                        <input type="image" class="posicion_otrosproductos{{ i }}" name="" id="boton_imagen{{ i }}"
+                               onclick="boton_grupo_{{ nsgrupos.countgrupos }}(this)" src="{{ productosprincipales[i].urlimagenproducto }}" height="100" width="100">
+                    </form>
+                    {% if productosprincipales[i].principal == True %}
+                        {% set ns.countprincipales = ns.countprincipales + 1 %}
+                        <div class="posicion_texto{{ ns.countprincipales }}">¿?</div>
+                        <div class="posicion_productoprincipal{{ ns.countprincipales }}">
+                            <img src="{{ productosprincipales[i].urlimagenproducto }}" height="{{ productosprincipales[i].h }}" width="{{ productosprincipales[i].v }}">
+                        </div>
+                    {% endif %}
 
-            {% else %}
-                <!-- NO ES UN ELEMENTO PRINCIPAL -->
+                {% endfor %}
             {% endif %}
-        {% endfor %}
-    {% endif %}
-
+        </div>
     </div>
 
+{% endblock %}
 
-    </center>
+{% block scripts %}
+    <script>
+
+        function boton_grupo_0(imagen, id) {
+            var elemento1 = document.getElementById("boton_imagen0");
+            var elemento2 = document.getElementById("boton_imagen1");
+            var elemento3 = document.getElementById("boton_imagen2");
+
+            elemento1.style.border = "0px solid white";
+            elemento2.style.border = "0px solid white";
+            elemento3.style.border = "0px solid white";
+
+            imagen.style.border = "3px solid black";
+
+
+        }
+
+        function boton_grupo_1(imagen) {
+
+            var elemento1 = document.getElementById("boton_imagen3");
+            var elemento2 = document.getElementById("boton_imagen4");
+            var elemento3 = document.getElementById("boton_imagen5");
+
+            elemento1.style.border = "0px";
+            elemento2.style.border = "0px";
+            elemento3.style.border = "0px";
+
+            imagen.style.border = "3px solid black";
+        }
+
+        function boton_grupo_2(imagen) {
+            var elemento1 = document.getElementById("boton_imagen6");
+            var elemento2 = document.getElementById("boton_imagen7");
+            var elemento3 = document.getElementById("boton_imagen8");
+
+            elemento1.style.border = "0px";
+            elemento2.style.border = "0px";
+            elemento3.style.border = "0px";
+
+            imagen.style.border = "3px solid black";
+        }
+
+
+
+    </script>
 {% endblock %}

@@ -40,8 +40,9 @@ class ManagerWeb:
             try:
                 # dimensiones: list[str] = url.split("__")[3].split(".")[0].split("x")
                 separaciones = url.split("x")
-                h = separaciones[0][-3:]
-                v = separaciones[1].split(".")[0]
+                h = separaciones[1].split(".")[0]
+                v = separaciones[0][-3:]
+
 
             except IndexError:
                 pass

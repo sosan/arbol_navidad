@@ -1,4 +1,6 @@
 import locale
+import uuid
+
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from datetime import datetime
@@ -15,6 +17,7 @@ class ManagerMongoDb:
         self.db: Database = None
         self.cursor: Collection = None
         self.cursorAyudas: Collection = None
+        self.cursorListadoRequests: Collection = None
 
     def conectDB(self, usuario, password, host, db, coleccion):
         try:
@@ -22,6 +25,7 @@ class ManagerMongoDb:
             self.db = self.cliente[db]
             self.cursor = self.db[coleccion]
             self.cursorAyudas = self.db["ayudas"]
+            self.cursorListadoRequests = self.db["listadorequests"]
         except ConnectionFailure:
             raise Exception("Servidor no disponible")
 
@@ -58,6 +62,7 @@ class ManagerMongoDb:
                 "urlimagenproducto": urlimagenproducto,
                 "h": h,
                 "v": v,
+                "principal": False,
                 "modificado": False
             }
         )
@@ -71,25 +76,25 @@ class ManagerMongoDb:
             return 1
         return 0
 
-    def modificarnota(self, ide, titulo, nota):
-
-        resultados = self.cursor.find_one({"_id": ObjectId(ide)})
-
-        if len(resultados) > 0:
-            fecha_current = datetime.utcnow()
-            if resultados["fecha_mod"] < fecha_current:
-
-                contenido = {
-                    "titulo": titulo,
-                    "nota": nota,
-                    "fecha_mod": fecha_current,
-                    "modificado": True
-                }
-
-                ok = self.cursor.update_one({"_id": ObjectId(ide)}, {"$set": contenido})
-                if ok.modified_count > 0:
-                    return True
-        return False
+    # def modificarnota(self, ide, titulo, nota):
+    #
+    #     resultados = self.cursor.find_one({"_id": ObjectId(ide)})
+    #
+    #     if len(resultados) > 0:
+    #         fecha_current = datetime.utcnow()
+    #         if resultados["fecha_mod"] < fecha_current:
+    #
+    #             contenido = {
+    #                 "titulo": titulo,
+    #                 "nota": nota,
+    #                 "fecha_mod": fecha_current,
+    #                 "modificado": True
+    #             }
+    #
+    #             ok = self.cursor.update_one({"_id": ObjectId(ide)}, {"$set": contenido})
+    #             if ok.modified_count > 0:
+    #                 return True
+    #     return False
 
     def getcantidadproductos(self):
         resultados = self.cursorAyudas.find_one({"_id": "contador"}, {"_id": False})
@@ -104,9 +109,32 @@ class ManagerMongoDb:
             return None
         return resultados
 
+    def setrequest(self, resultados, id_request: str):
+
+        list_temp = []
+        for i in range(0, len(resultados)):
+            if "principal" in resultados[i]:
+                dict_temp = {
+                    "id_request": id_request,
+                    "id_resultado": resultados[i]["_id"],
+                    "principal": resultados[i]["principal"],
+                    "urlimagenproducto": resultados[i]["urlimagenproducto"]
+                }
+            else:
+                dict_temp = {
+                    "id_request": id_request,
+                    "id_resultado": resultados[i]["_id"],
+                    "principal": False,
+                    "urlimagenproducto": resultados[i]["urlimagenproducto"]
+                }
+            list_temp.append(dict_temp)
+
+        ok = self.cursorListadoRequests.insert_many(list_temp)
+        if len(ok.inserted_ids) != len(resultados):
+            return None
+        return True
 
 
 managermongo = ManagerMongoDb()
-
 managermongo.conectDB("pepito", "pepito", "cluster0-6oq5a.gcp.mongodb.net/test?retryWrites=true&w=majority",
                       db="arbol", coleccion="productos")

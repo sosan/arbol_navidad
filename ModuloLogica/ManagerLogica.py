@@ -30,7 +30,7 @@ class ManagerLogica:
 
         return ok
 
-    def getproductos(self, cantidadproductos, productosrelleno):
+    def getproductos(self, cantidadproductos, productosrelleno, id_request):
         ok, maxcantidad = self.managermongo.getcantidadproductos()
         if ok == False:
             return False
@@ -48,11 +48,22 @@ class ManagerLogica:
         resultados = self.managermongo.getproductosbyid(listadoids)
         if resultados == None:
             return None
+        # desordenador lista resultados
+        random.shuffle(resultados)
+        # resultados = random.sample(resultados, len(resultados))
 
-        productosprincipales = []
-        while cantidadproductos > len(productosprincipales):
-            rndpos = random.randint(0, len(resultados))
-            q = resultados.pop(rndpos)
-            productosprincipales.append(q)
+        # elegimos 1 como producto principal
+        rnd = random.randint(0, 2)
+        resultados[rnd]["principal"] = True
 
-        return resultados, productosprincipales
+        rnd = random.randint(3, 5)
+        resultados[rnd]["principal"] = True
+
+        rnd = random.randint(6, 8)
+        resultados[rnd]["principal"] = True
+
+        ok = self.managermongo.setrequest(resultados, id_request)
+        if ok is False:
+            return None
+
+        return resultados

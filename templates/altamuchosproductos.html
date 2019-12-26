@@ -3,7 +3,6 @@
 {% block content %}
     <div class="container">
     <h1>ALTA PRODUCTO</h1>
-
     {% if ok == True %}
         <div class="alert alert-success" id="success-alert">
           Producto {{ nombreproducto }} dado de alta correctamente
@@ -15,23 +14,47 @@
     {% endif %}
 
 {% if formulario %}
-    <form action="{{ url_for("recibirdatos_alta_producto") }}" method="post">
+    <form action="{{ url_for("recibirdatos_alta_muchos_productos") }}" method="post">
         {% for campoform in formulario %}
             <div class="text-left">{{ campoform.label }}</div>
             {% if campoform.type == "StringField" %}
                 <div class="input-sm">{{ campoform(placeholder=campoform.description) }}</div>
             {% elif campoform.type == "URLField" %}
                 <div class="input-sm">{{ campoform(size="40", placeholder=campoform.description) }}</div>
-
+            {% elif campoform.type == "TextAreaField" %}
+                <div class="input-sm">{{ campoform(cols="40", rows="4", placeholder=campoform.description) }}</div>
+                <br><br>
             {% endif %}
             <br>
         {% endfor %}
-    <button type="submit" class="img-rounded">Registrar Producto</button>
+
+    <button type="submit" class="img-rounded">Registrar Todos Productos</button>
+    <br><br>
+    <h5>Puede tardar varios segundos en registrar los productos, depende de la cantidad de urls</h5>
     </form>
+
+{% endif %}
+    {{ super() }}
+{% if urlsinsertadas %}
+
+    <h1>PRODUCTOS DADOS DE ALTA CORRECTAMENTE:</h1>
+    {% for elemento in urlsinsertadas %}
+        <div class="row">
+            <div class="col-lg-11">{{ elemento[1] }}</div>
+            <div class="col-lg-1">
+                {% if elemento[0] == True %}
+                    <button type="button" class="btn btn-success">OK</button>
+                {% else %}
+                    <button type="button" class="btn btn-danger">ERROR!</button>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+<br><br>
 {% endif %}
 
     </div>
-{{ super() }}
+
 {% endblock %}
 
 {% block scripts %}

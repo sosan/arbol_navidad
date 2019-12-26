@@ -30,6 +30,19 @@ class ManagerLogica:
 
         return ok
 
+    def crearmuchosproductos(self, nombregeneralproductos, strproductos):
+        listado_resultados = []
+        insertadostodos = True
+        listproductos = strproductos.splitlines()
+        for i in range(0, len(listproductos)):
+            ok = self.crearproducto(nombregeneralproductos, listproductos[i])
+            print("Creado")
+            listado_resultados.append((ok, listproductos[i]))
+            if ok == False:
+                insertadostodos = False
+
+        return insertadostodos, listado_resultados
+
     def getproductos(self, cantidadproductos, productosrelleno, id_request):
         ok, maxcantidad = self.managermongo.getcantidadproductos()
         if ok == False:

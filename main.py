@@ -34,6 +34,42 @@ def admin_profile():
     return render_template("admin_profile.html")
 
 
+@app.route("/admin_profile/muchos_alta", methods=["GET"])
+def alta_muchos_productos():
+    template_registrar_producto = FormularioRellanarMuchosProductos(request.form)
+    registrado_ok = False
+
+    if "registrado_ok" in session and "nombreproducto" in session and "resultados" in session:
+        registrado_ok = session["registrado_ok"]
+        urlsinsertadas = session.pop("resultados")
+        if registrado_ok == True:
+            session["registrado_ok"] = False
+
+        return render_template("altamuchosproductos.html", formulario=template_registrar_producto, ok=registrado_ok,
+                               nombreproducto=session["nombreproducto"], urlsinsertadas=urlsinsertadas)
+
+    return render_template("altamuchosproductos.html", formulario=template_registrar_producto, ok=registrado_ok,
+                           nombreproducto="")
+
+
+@app.route("/admin_profile/muchos_alta", methods=["POST"])
+def recibirdatos_alta_muchos_productos():
+    if "urlproducto" in request.form and "nombreproducto" in request.form:
+        template_registrar_producto = FormularioRellanarMuchosProductos(request.form)
+        if template_registrar_producto.validate():
+            ok, resultados = managerlogica.crearmuchosproductos(request.form["nombreproducto"],
+                                                                request.form["urlproducto"]
+                                                                )
+            session["resultados"] = resultados
+            if ok == True:
+                session["registrado_ok"] = True
+                session["nombreproducto"] = request.form["nombreproducto"]
+            else:
+                session["registrado_ok"] = False
+
+    return redirect(url_for("alta_muchos_productos"))
+
+
 @app.route("/admin_profile/alta", methods=["GET"])
 def alta_producto():
     template_registrar_producto = FormularioRellanarProducto(request.form)
@@ -57,8 +93,8 @@ def recibirdatos_alta_producto():
         return redirect(url_for("alta_producto"))
 
     template_registrar_producto = FormularioRellanarProducto(request.form)
-    if template_registrar_producto.validate():
 
+    if template_registrar_producto.validate():
         ok = managerlogica.crearproducto(request.form["nombreproducto"],
                                          request.form["urlproducto"]
                                          )
@@ -98,7 +134,11 @@ def home():
             pass
         else:
             # hemos fallado
-            pass
+            return render_template("index.html",
+                                   productosprincipales=productosprincipales,
+                                   maxproductosprincipales=len(productosprincipales),
+                                   id_request=id_request
+                                   )
 
     id_request = str(uuid.uuid4())
 
@@ -115,11 +155,11 @@ def home():
 
 @app.route("/tempruta", methods=["POST"])
 def recibirproductoseleccionado():
-    if "id" in request.form and "id_request" in request.form:
+    if "id_resultado" in request.form and "id_request" in request.form:
         try:
-            id_resultado = int(request.form["id"])
+            id_resultado = int(request.form["id_resultado"])
         except ValueError:
-            raise Exception("Conversion fallida {0}".format(request.form["id"]))
+            raise Exception("Conversion fallida {0}".format(request.form["id_resultado"]))
 
         session["id_request"] = request.form["id_request"]
         session["id_resultado"] = id_resultado

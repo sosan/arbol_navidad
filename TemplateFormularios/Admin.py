@@ -1,5 +1,6 @@
 from wtforms import Form
 from wtforms import StringField
+from wtforms import TextAreaField
 from wtforms import validators
 from wtforms import HiddenField
 from wtforms import SubmitField
@@ -32,6 +33,21 @@ class FormularioRellanarProducto(Form):
     # urlimagenproducto = URLField(label="URL IMAGEN Producto:", validators=[
     #     validators.data_required(message="Este campo es requerido"),
     # ], description="Url Imagen Producto")
+
+
+class FormularioRellanarMuchosProductos(Form):
+    nombreproducto = StringField(label="Nombre Producto:", validators=[
+        validators.data_required(message="Este campo es requerido"),
+    ], description="Nombre Producto")
+
+    urlproducto = TextAreaField(label="URLS Producto:", validators=[
+        validators.data_required(message="Este campo es requerido"),
+    ], description="Urls Producto")
+
+    # urlimagenproducto = URLField(label="URL IMAGEN Producto:", validators=[
+    #     validators.data_required(message="Este campo es requerido"),
+    # ], description="Url Imagen Producto")
+
 
 
 class FormularioLogin(Form):

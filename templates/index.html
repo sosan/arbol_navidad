@@ -14,7 +14,7 @@
                     {% endif %}
                     <form method="post" action="{{ url_for("recibirproductoseleccionado") }}">
                         <input type="hidden" name="id_request" value="{{ id_request }}">
-                        <input type="hidden" name="id" value="{{ productosprincipales[i]._id }}">
+                        <input type="hidden" name="id_resultado" value="{{ productosprincipales[i].id_auto }}">
                         <input type="image" class="posicion_otrosproductos{{ i }}" name="" id="boton_imagen{{ i }}"
                                onclick="boton_grupo_{{ nsgrupos.countgrupos }}(this)" src="{{ productosprincipales[i].urlimagenproducto }}" height="100" width="100">
                     </form>

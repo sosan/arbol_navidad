@@ -135,8 +135,8 @@ def home():
         else:
             # hemos fallado
             return render_template("index.html",
-                                   productosprincipales=productosprincipales,
-                                   maxproductosprincipales=len(productosprincipales),
+                                   productosprincipales=resultados,
+                                   maxproductosprincipales=len(resultados),
                                    id_request=id_request
                                    )
 

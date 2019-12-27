@@ -121,7 +121,6 @@ def ver_productos():
 
 @app.route("/", methods=["GET"])
 def home():
-
     ip = None
     if "ip" not in session:
         session["ip"] = request.remote_addr
@@ -163,8 +162,6 @@ def home():
 
     # creamos un usuario para ese request
 
-
-
     id_request = str(uuid.uuid4())
 
     productosprincipales = managerlogica.getproductos(cantidadproductos=3, productosrelleno=3, id_request=id_request)
@@ -193,7 +190,7 @@ def recibirproductoseleccionado():
     return redirect(url_for("home"))  # __METHOD_OVERRIDE__='POST',
 
 
-@app.route("/reset", methods=["POST"])
+@app.route("/reset", methods=["POST", "GET"])
 def reset_tiempo():
     session.clear()
     managerlogica.reset_tiempo(request.form["ip"])

@@ -36,7 +36,8 @@
                         {% set ns.countprincipales = ns.countprincipales + 1 %}
                         <div class="posicion_texto{{ ns.countprincipales }}">¿?</div>
                         <div class="posicion_productoprincipal{{ ns.countprincipales }}">
-                            <img src="{{ productosprincipales[i].urlimagenproducto }}" height="{{ productosprincipales[i].h }}" width="{{ productosprincipales[i].v }}">
+                            <img src="{{ url_for("static", filename="images/pixel.png") }}" height="{{ productosprincipales[i].h }}" width="{{ productosprincipales[i].v }}">
+{#                        {{ productosprincipales[i].urlimagenproducto }}#}
                         </div>
                     {% endif %}
                 {% endfor %}

@@ -4,6 +4,7 @@ import uuid
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from datetime import datetime
+from datetime import timedelta
 from pymongo.collection import Collection, ReturnDocument
 from pymongo.database import Database
 from pymongo.errors import ConnectionFailure
@@ -18,6 +19,7 @@ class ManagerMongoDb:
         self.cursor: Collection = None
         self.cursorAyudas: Collection = None
         self.cursorListadoRequests: Collection = None
+        self.cursorBloqueos: Collection = None
 
     def conectDB(self, usuario, password, host, db, coleccion):
         try:
@@ -26,6 +28,8 @@ class ManagerMongoDb:
             self.cursor = self.db[coleccion]
             self.cursorAyudas = self.db["ayudas"]
             self.cursorListadoRequests = self.db["listadorequests"]
+            self.cursorBloqueos = self.db["bloqueos"]
+
         except ConnectionFailure:
             raise Exception("Servidor no disponible")
 
@@ -85,7 +89,7 @@ class ManagerMongoDb:
 
     def getproductosbyid(self, ides):
         patron = {"id_auto": {"$in": ides}}
-        resultados = list(self.cursor.find(patron))
+        resultados = list(self.cursor.find(patron).sort("id_auto", 1))
         if len(resultados) <= 0:
             return None
         return resultados
@@ -120,8 +124,53 @@ class ManagerMongoDb:
         return True
 
     def getcomprobacion(self, id_resultado, id_request):
-        ok = list(self.cursorListadoRequests.find({"id_request": id_request}))
+        resultados = list(self.cursorListadoRequests.find({"id_request": id_request}).sort(key_or_list="id_auto",
+                                                                                           direction=1))
+        return resultados
+
+    def borrarrrequests(self, id_requests):
+        ok = self.cursorListadoRequests.delete_many({"id_request": id_requests})
         return ok
+
+    def updaterequest(self, id_request, list_id_auto):
+
+        ok = self.cursorListadoRequests.update_many(
+            {"id_request": id_request, "id_auto": {'$in': list_id_auto}}, {'$set': {"modificado": True}}
+        )
+        if ok.modified_count == 3:
+            return True
+        return False
+
+    def getoportunidades(self, id_request):
+        ok = list(self.cursorListadoRequests.find({"id_request": id_request, "modificado": False}))
+        if len(ok) > 0:
+            return True
+        return False
+
+    def reset_tiempo(self, id_usuario):
+        ok = self.cursorBloqueos.find_one({"id_request": id_usuario})
+        if len(ok) > 0:
+            tiempo_request_mas_24h = ok[0]["tiempo_request"] + timedelta(hours=24)
+            fecha_actual = datetime.utcnow()
+            if fecha_actual > tiempo_request_mas_24h:
+                ok = self.cursorBloqueos.update_one({"id_request": id_usuario},
+                                                    {"$set": {"tiempo_request": fecha_actual}})
+                return True
+
+        return False
+
+    def get_tiempobloqueo(self, id_usuario):
+        ok = self.cursorBloqueos.find_one({"id_usuario": id_usuario})
+        if ok != None:
+            return ok
+        return None
+
+    def set_tiempbloqueo(self, id_usuario):
+        fecha = datetime.utcnow()
+        ok = self.cursorBloqueos.insert_one({"id_usuario": id_usuario, "tiempo_request": fecha})
+        if ok.inserted_id != None:
+            return True
+        return False
 
 
 managermongo = ManagerMongoDb()

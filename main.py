@@ -7,7 +7,9 @@
     la parte de interfaz ManagerLogica.py
 """
 
-from flask import Flask, session
+from flask import Flask
+from flask import session
+from flask import abort
 from flask import render_template
 from flask import request
 from flask import redirect
@@ -119,26 +121,50 @@ def ver_productos():
 
 @app.route("/", methods=["GET"])
 def home():
-    # creamos un usuario para ese request
+
     if "id_request" in session:
 
-        id_request = session["id_request"]
-        id_resultado = session["id_resultado"]
-        try:
-            session.clear()
-        except KeyError:
-            return render_template("index.html")
-        ok, resultados = managerlogica.getcomprobacion(id_resultado, id_request)
+        id_request = session.pop("id_request")
+        id_resultado = session.pop("id_resultado")
+        grupo = session.pop("grupo")
+        # session.clear()
+
+        id_usuario = session["id_usuario"]
+        if managerlogica.get_tiempobloqueo(id_usuario) == False:
+            abort(404)
+
+        ok, resultados = managerlogica.getcomprobacion(id_resultado, id_request, grupo)
         if ok == True:
             # hemos acertado
-            pass
+            print("Acertado")
+            managerlogica.borrarlistadorequests(id_request)
+            return render_template("premio.html", premio=resultados)
         else:
             # hemos fallado
+            print("Fallado")
+            if not resultados:
+                managerlogica.borrarlistadorequests(id_request)
+
             return render_template("index.html",
                                    productosprincipales=resultados,
                                    maxproductosprincipales=len(resultados),
                                    id_request=id_request
                                    )
+
+    # creamos un usuario para ese request
+    if "id_usuario" not in session:
+        id_usuario = str(uuid.uuid4())
+        session["id_usuario"] = id_usuario
+        managerlogica.get_tiempobloqueo(id_usuario)
+    else:
+        id_usuario = session["id_usuario"]
+        if managerlogica.get_tiempobloqueo(id_usuario) == False:
+            abort(404)
+        else:
+            id_usuario = str(uuid.uuid4())
+            session["id_usuario"] = id_usuario
+            managerlogica.get_tiempobloqueo(id_usuario)
+
 
     id_request = str(uuid.uuid4())
 
@@ -163,8 +189,16 @@ def recibirproductoseleccionado():
 
         session["id_request"] = request.form["id_request"]
         session["id_resultado"] = id_resultado
+        session["grupo"] = request.form["grupo"]
 
     return redirect(url_for("home"))  # __METHOD_OVERRIDE__='POST',
+
+
+@app.route("/reset", methods=["POST"])
+def reset_tiempo():
+    session.clear()
+    managerlogica.reset_tiempo(request.form["id_request"])
+    return redirect(url_for("home"))
 
 
 if __name__ == '__main__':

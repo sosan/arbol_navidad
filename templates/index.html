@@ -1,5 +1,15 @@
 {% extends "base.html" %}
 
+{% block head %}
+    {{ super() }}
+    <meta HTTP-EQUIV="Pragma" content="no-cache">
+  <meta HTTP-EQUIV="Expires" content="-1">
+{% endblock %}
+
+{% block title %}SORTEO NAVIDAD{% endblock %}
+
+
+
 {% block content %}
 
     <div class="container ">
@@ -12,12 +22,18 @@
                     {% if i == 3 or i == 6 %} <!-- modificar -->
                         {% set nsgrupos.countgrupos = nsgrupos.countgrupos + 1 %}
                     {% endif %}
+                    {% if productosprincipales[i]["modificado"] == False %}
                     <form method="post" action="{{ url_for("recibirproductoseleccionado") }}">
+                        <input type="hidden" name="grupo" value="{{ nsgrupos.countgrupos }}">
                         <input type="hidden" name="id_request" value="{{ id_request }}">
                         <input type="hidden" name="id_resultado" value="{{ productosprincipales[i].id_auto }}">
                         <input type="image" class="posicion_otrosproductos{{ i }}" name="" id="boton_imagen{{ i }}"
                                onclick="boton_grupo_{{ nsgrupos.countgrupos }}(this)" src="{{ productosprincipales[i].urlimagenproducto }}" height="100" width="100">
                     </form>
+                    {% else %}
+                        <img class="posicion_otrosproductos{{ i }}" name="" id="boton_imagen{{ i }}" src="{{ url_for("static", filename="images/error.png") }}" height="100" width="100">
+
+                    {% endif %}
                     {% if productosprincipales[i].principal == True %}
                         {% set ns.countprincipales = ns.countprincipales + 1 %}
                         <div class="posicion_texto{{ ns.countprincipales }}">¿?</div>
@@ -25,8 +41,16 @@
                             <img src="{{ productosprincipales[i].urlimagenproducto }}" height="{{ productosprincipales[i].h }}" width="{{ productosprincipales[i].v }}">
                         </div>
                     {% endif %}
-
                 {% endfor %}
+            {% else %}
+                <div class="posicion_nomasintentos">
+                    <h1><b>SE HAN TERMINADO LAS OPORTUNIDADES VUELVE EN 24 HORAS.</b></h1><br>
+                    <form action="{{ url_for("reset_tiempo") }}" method="post">
+                        <input type="hidden" name="id_request" value="{{ id_request }}">
+                        <input type="hidden" name="reset">
+                        <button type="submit" class="btn btn-success">RESET TIEMPO</button><br>
+                    </form>
+                </div>
             {% endif %}
         </div>
     </div>

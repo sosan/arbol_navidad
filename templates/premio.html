@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <meta HTTP-EQUIV="Pragma" content="no-cache">
+  <meta HTTP-EQUIV="Expires" content="-1">
+{% endblock %}
+
+{% block title %}SORTEO NAVIDAD - PREMIO{% endblock %}
+{% block content %}
+
+    <div class="container">
+        <div class="vertical-align bounce-in-bck">
+             <h1>FELICIDADES!!</h1><br>
+
+        </div>
+    <H2>PREMIO GANADO:</H2><br>
+             <img src="{{ premio["urlimagenproducto"] }}" width="{{ premio["v"]  }}" height="{{ premio["h"]  }}" ><br>
+             <a href="{{ premio["urlproducto"]  }}"><button type="button" class="btn btn-success">RECOGER PREMIO</button></a>
+    <br><br>
+    </div>
+{% endblock %}

@@ -129,6 +129,20 @@ class ManagerLogica:
 
     def get_tiempobloqueo(self, ip):
         resultado = self.managermongo.get_tiempobloqueo(ip)
+        if resultado == None:
+            return True
+        else:
+            if datetime.utcnow() < resultado["tiempo_request"]:
+                return False
+            else:
+                return True
+
+    def set_tiempobloqueo(self, ip):
+        ok = self.managermongo.set_tiempobloqueo(ip)
+        return ok
+
+    def get_tiempobloqueo2(self, ip):
+        resultado = self.managermongo.get_tiempobloqueo(ip)
         if resultado != None:
             tiempo_request_mas_24h = resultado["tiempo_request"] + timedelta(hours=24)
             if datetime.utcnow() < tiempo_request_mas_24h:

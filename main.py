@@ -121,15 +121,7 @@ def ver_productos():
 
 @app.route("/", methods=["GET"])
 def home():
-    ip = None
-    if "ip" not in session:
-        session["ip"] = request.remote_addr
-        ip = request.remote_addr
-    else:
-        ip = session["ip"]
 
-    if managerlogica.get_tiempobloqueo(ip) == False:
-        return render_template("abort.html", ip=ip)
 
     if "id_request" in session:
 
@@ -138,9 +130,6 @@ def home():
         grupo = session.pop("grupo")
         # session.clear()
 
-        id_usuario = session["id_usuario"]
-        if managerlogica.get_tiempobloqueo(id_usuario) == False:
-            abort(404)
 
         ok, resultados = managerlogica.getcomprobacion(id_resultado, id_request, grupo)
         if ok == True:
@@ -153,6 +142,16 @@ def home():
             print("Fallado")
             if not resultados:
                 managerlogica.borrarlistadorequests(id_request)
+                ip = None
+                if "ip" not in session:
+                    session["ip"] = request.remote_addr
+                    ip = request.remote_addr
+                else:
+                    ip = session["ip"]
+
+                managerlogica.set_tiempobloqueo(ip)
+                return render_template("abort.html", ip=ip)
+
 
             return render_template("index.html",
                                    productosprincipales=resultados,
@@ -160,7 +159,17 @@ def home():
                                    id_request=id_request
                                    )
 
-    # creamos un usuario para ese request
+
+    ip = None
+    if "ip" not in session:
+        session["ip"] = request.remote_addr
+        ip = request.remote_addr
+    else:
+        ip = session["ip"]
+
+    if managerlogica.get_tiempobloqueo(ip) == False:
+        return render_template("abort.html", ip=ip)
+
 
     id_request = str(uuid.uuid4())
 

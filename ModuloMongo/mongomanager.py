@@ -150,10 +150,10 @@ class ManagerMongoDb:
     def reset_tiempo(self, ip):
         resultado = self.cursorBloqueos.find_one({"ip": ip})
         if resultado != None:
-            tiempo_request_mas_24h = resultado["tiempo_request"] + timedelta(hours=24)
+            tiempo_request_mas_24h = resultado["tiempo_request"] + timedelta(hours=25)
             ok = self.cursorBloqueos.update_one({"ip": ip},
                                                 {"$set": {"tiempo_request": tiempo_request_mas_24h}})
-            if ok.upserted_id != None:
+            if ok.modified_count == 1:
                 return True
         return False
 

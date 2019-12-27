@@ -193,7 +193,10 @@ def recibirproductoseleccionado():
 @app.route("/reset", methods=["POST", "GET"])
 def reset_tiempo():
     session.clear()
-    managerlogica.reset_tiempo(request.form["ip"])
+    if request.method == "POST":
+        managerlogica.reset_tiempo(request.form["ip"])
+    else:
+        managerlogica.reset_tiempo(request.remote_addr)
     return redirect(url_for("home"))
 
 

@@ -122,6 +122,16 @@ def ver_productos():
 @app.route("/", methods=["GET"])
 def home():
 
+    ip = None
+    if "ip" not in session:
+        session["ip"] = request.remote_addr
+        ip = request.remote_addr
+    else:
+        ip = session["ip"]
+
+    if managerlogica.get_tiempobloqueo(ip) == False:
+        return render_template("abort.html", ip=ip)
+
     if "id_request" in session:
 
         id_request = session.pop("id_request")
@@ -152,18 +162,7 @@ def home():
                                    )
 
     # creamos un usuario para ese request
-    if "id_usuario" not in session:
-        id_usuario = str(uuid.uuid4())
-        session["id_usuario"] = id_usuario
-        managerlogica.get_tiempobloqueo(id_usuario)
-    else:
-        id_usuario = session["id_usuario"]
-        if managerlogica.get_tiempobloqueo(id_usuario) == False:
-            abort(404)
-        else:
-            id_usuario = str(uuid.uuid4())
-            session["id_usuario"] = id_usuario
-            managerlogica.get_tiempobloqueo(id_usuario)
+
 
 
     id_request = str(uuid.uuid4())
@@ -197,7 +196,7 @@ def recibirproductoseleccionado():
 @app.route("/reset", methods=["POST"])
 def reset_tiempo():
     session.clear()
-    managerlogica.reset_tiempo(request.form["id_request"])
+    managerlogica.reset_tiempo(request.form["ip"])
     return redirect(url_for("home"))
 
 

@@ -1,4 +1,10 @@
 {% extends "bootstrap/base.html" %}
+{% block head %}
+    {{ super() }}
+    <meta HTTP-EQUIV="Pragma" content="no-cache">
+  <meta HTTP-EQUIV="Expires" content="-1">
+{% endblock %}
+
 
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for("static", filename="css/reset.css") }}">

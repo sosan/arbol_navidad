@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block title %}SORTEO NAVIDAD{% endblock %}
+{% block content %}
+
+    <div class="container">
+        <div class="vertical-align bounce-in-bck">
+             <h1>UN INTENTO CADA 24 HORAS</h1><br>
+
+        </div>
+    <form action="{{ url_for("reset_tiempo") }}" method="post">
+                        <input type="hidden" name="ip" value="{{ ip }}">
+                        <input type="hidden" name="reset">
+                        <button type="submit" class="btn btn-success">RESET TIEMPO</button><br>
+                    </form>
+
+    </div>
+{% endblock %}

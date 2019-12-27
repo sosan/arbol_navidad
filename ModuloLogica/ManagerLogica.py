@@ -124,16 +124,17 @@ class ManagerLogica:
             raise Exception("no update correcto: {0}".format(id_request))
         return resultados
 
-    def reset_tiempo(self, id_usuario):
-        self.managermongo.reset_tiempo(id_usuario)
+    def reset_tiempo(self, ip):
+        self.managermongo.reset_tiempo(ip)
 
-    def get_tiempobloqueo(self, id_usuario):
-        resultado = self.managermongo.get_tiempobloqueo(id_usuario)
+    def get_tiempobloqueo(self, ip):
+        resultado = self.managermongo.get_tiempobloqueo(ip)
         if resultado != None:
             tiempo_request_mas_24h = resultado["tiempo_request"] + timedelta(hours=24)
             if datetime.utcnow() > tiempo_request_mas_24h:
                 return True
         else:
-            ok = self.managermongo.set_tiempbloqueo(id_usuario)
+            ok = self.managermongo.set_tiempbloqueo(ip)
             return ok
         return False
+

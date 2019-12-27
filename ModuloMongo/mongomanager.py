@@ -147,27 +147,25 @@ class ManagerMongoDb:
             return True
         return False
 
-    def reset_tiempo(self, id_usuario):
-        ok = self.cursorBloqueos.find_one({"id_request": id_usuario})
+    def reset_tiempo(self, ip):
+        ok = self.cursorBloqueos.find_one({"ip": ip})
         if len(ok) > 0:
             tiempo_request_mas_24h = ok[0]["tiempo_request"] + timedelta(hours=24)
-            fecha_actual = datetime.utcnow()
-            if fecha_actual > tiempo_request_mas_24h:
-                ok = self.cursorBloqueos.update_one({"id_request": id_usuario},
-                                                    {"$set": {"tiempo_request": fecha_actual}})
+            ok = self.cursorBloqueos.update_one({"ip": ip},
+                                                {"$set": {"tiempo_request": tiempo_request_mas_24h}})
+            if ok.upserted_id != None:
                 return True
-
         return False
 
-    def get_tiempobloqueo(self, id_usuario):
-        ok = self.cursorBloqueos.find_one({"id_usuario": id_usuario})
+    def get_tiempobloqueo(self, ip):
+        ok = self.cursorBloqueos.find_one({"ip": ip})
         if ok != None:
             return ok
         return None
 
-    def set_tiempbloqueo(self, id_usuario):
+    def set_tiempbloqueo(self, ip):
         fecha = datetime.utcnow()
-        ok = self.cursorBloqueos.insert_one({"id_usuario": id_usuario, "tiempo_request": fecha})
+        ok = self.cursorBloqueos.insert_one({"tiempo_request": fecha, "ip": ip})
         if ok.inserted_id != None:
             return True
         return False

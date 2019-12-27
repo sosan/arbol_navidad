@@ -132,7 +132,7 @@ class ManagerLogica:
         if resultado == None:
             return True
         else:
-            if datetime.utcnow() < resultado["tiempo_request"]:
+            if resultado["tiempo_request"] > datetime.utcnow():
                 return False
             else:
                 return True

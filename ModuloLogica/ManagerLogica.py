@@ -131,10 +131,10 @@ class ManagerLogica:
         resultado = self.managermongo.get_tiempobloqueo(ip)
         if resultado != None:
             tiempo_request_mas_24h = resultado["tiempo_request"] + timedelta(hours=24)
-            if datetime.utcnow() > tiempo_request_mas_24h:
+            if datetime.utcnow() < tiempo_request_mas_24h:
+                return False
+            else:
                 return True
         else:
             ok = self.managermongo.set_tiempbloqueo(ip)
             return ok
-        return False
-

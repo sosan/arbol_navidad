@@ -1,0 +1,17 @@
+{% extends "base_admin.html" %}
+{% block title %} {{ super() }} ALTA PRODUCTO {% endblock %}
+{% block content %}
+    <div class="container">
+    <h1>CAMBIAR VISIBILIDAD</h1>
+    <form action="{{ url_for("cambiar_visibilidad") }}" method="post">
+        <label>Visibilidad: </label>
+        <input type="text" class="" name="visibilidad" value="{{ visibilidad }}">
+        <button type="submit">Guardar cambios</button>
+
+    </form>
+
+    {{ super() }}
+
+
+    </div>
+{% endblock %}

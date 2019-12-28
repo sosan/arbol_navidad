@@ -72,7 +72,7 @@ padding: 0.4rem 0.4rem;
     position: absolute;
     background-color: black;
     z-index:5;
-    filter: brightness(0%);
+    /*filter: brightness(40%);*/
 
 
 
@@ -86,7 +86,7 @@ padding: 0.4rem 0.4rem;
     top: 290px;
     position: absolute;
     z-index:5;
-     filter: brightness(0%);
+     /*filter: brightness(40%);*/
 }
 
 
@@ -96,7 +96,7 @@ padding: 0.4rem 0.4rem;
     top: 286px;
     position: absolute;
     z-index:5;
-     filter: brightness(0%);
+     /*filter: brightness(40%);*/
 }
 
 

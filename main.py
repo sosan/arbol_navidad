@@ -25,6 +25,8 @@ bootstrap = Bootstrap(app)
 app.secret_key = "sescreto"
 managerlogica = ManagerLogica()
 
+VISIBILIDAD = 100
+
 
 @app.route("/admin", methods=["GET"])
 def home_admin():
@@ -196,6 +198,21 @@ def opciones():
     return redirect(url_for("ver_productos"))
 
 
+@app.route("/admin_profile/visibilidad", methods=["GET"])
+def ver_visibilidad():
+    return render_template("visibilidadproductosprincipales.html", visibilidad=VISIBILIDAD)
+
+
+@app.route("/admin_profile/temporeuta", methods=["POST"])
+def cambiar_visibilidad():
+
+    if "visibilidad" in request.form:
+        global VISIBILIDAD
+        VISIBILIDAD = int(request.form["visibilidad"])
+
+    return redirect(url_for("ver_visibilidad"))
+
+
 @app.route("/", methods=["GET"])
 def home():
     if "id_request" in session:
@@ -203,7 +220,6 @@ def home():
         id_request = session.pop("id_request")
         id_resultado = session.pop("id_resultado")
         grupo = session.pop("grupo")
-        # session.clear()
 
         ok, resultados = managerlogica.getcomprobacion(id_resultado, id_request, grupo)
         managerlogica.borrarlistadorequests(id_request)
@@ -218,14 +234,6 @@ def home():
             print("Fallado")
             if not resultados:
                 bloquearip(request.remote_addr)
-                # ip = None
-                # if "ip" not in session:
-                #     session["ip"] = request.remote_addr
-                #     ip = request.remote_addr
-                # else:
-                #     ip = session["ip"]
-                #
-                # managerlogica.set_tiempobloqueo(ip)
                 return render_template("abort.html", ip=request.remote_addr)
 
             return render_template("index.html",
@@ -251,7 +259,8 @@ def home():
         return render_template("index.html",
                                productosprincipales=productosprincipales,
                                maxproductosprincipales=len(productosprincipales),
-                               id_request=id_request
+                               id_request=id_request,
+                               visibilidad=VISIBILIDAD
                                )
 
     return render_template("index.html")

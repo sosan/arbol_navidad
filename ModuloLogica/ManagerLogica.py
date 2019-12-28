@@ -96,7 +96,7 @@ class ManagerLogica:
                     if resultados[i]["principal"] == True:
                         return True, resultados[i]
 
-            resultados = self.setErrores(grupo, resultados, id_request)
+            resultados = self.setErrores(grupo, resultados, id_request)  # FUNCIONA CORRECTO
             oportunidades = self.managermongo.getoportunidades(id_request)
             if oportunidades == False:
                 resultados = []

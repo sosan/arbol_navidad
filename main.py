@@ -222,24 +222,26 @@ def home():
         grupo = session.pop("grupo")
 
         ok, resultados = managerlogica.getcomprobacion(id_resultado, id_request, grupo)
-        managerlogica.borrarlistadorequests(id_request)
+
         if ok == True:
             # hemos acertado
             print("Acertado")
             bloquearip(request.remote_addr)
-
+            managerlogica.borrarlistadorequests(id_request)
             return render_template("premio.html", premio=resultados)
         else:
             # hemos fallado
             print("Fallado")
             if not resultados:
                 bloquearip(request.remote_addr)
+                managerlogica.borrarlistadorequests(id_request)
                 return render_template("abort.html", ip=request.remote_addr)
 
             return render_template("index.html",
                                    productosprincipales=resultados,
                                    maxproductosprincipales=len(resultados),
-                                   id_request=id_request
+                                   id_request=id_request,
+                                   visibilidad=VISIBILIDAD
                                    )
 
     ip = None

@@ -59,7 +59,7 @@ class ManagerMongoDb:
 
         ok = self.cursor.insert_one(
             {
-                "id_auto": id_auto,
+                "id_auto": NumberInt(id_auto),
                 "fecha": fecha,
                 "fecha_mod": fecha,
                 "nombreproducto": nombreproducto,

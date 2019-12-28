@@ -28,6 +28,16 @@ managerlogica = ManagerLogica()
 
 @app.route("/admin", methods=["GET"])
 def home_admin():
+    if "email" in session and "password" in session:
+        # comprobar que este correcto
+        return redirect(url_for("admin_profile"))
+
+    context = {
+        "templatelogin": FormularioLogin(),
+        "intentos": 1,
+        "suspendido": False
+    }
+
     formulariologin = FormularioLogin(request.form)
     return render_template("admin_login.html", formulario=formulariologin)
 
@@ -39,6 +49,9 @@ def recibir_login_admin():
         ok = managerlogica.comprobaradmin(request.form["emailLogin"], request.form["passwordLogin"])
         if ok == True:
             # pa delante
+            session["email"] = request.form["emailLogin"]
+            session["password"] = request.form["passwordLogin"]
+
             return redirect(url_for("admin_profile"))
         else:
             # 3 intentos y pa casa
@@ -49,11 +62,19 @@ def recibir_login_admin():
 
 @app.route("/admin_profile", methods=["GET"])
 def admin_profile():
+    ok = comprobaremailpassword()
+    if ok == False:
+        return redirect(url_for("home_admin"))
+
     return render_template("admin_profile.html")
 
 
 @app.route("/admin_profile/muchos_alta", methods=["GET"])
 def alta_muchos_productos():
+    ok = comprobaremailpassword()
+    if ok == False:
+        return redirect(url_for("home_admin"))
+
     template_registrar_producto = FormularioRellanarMuchosProductos(request.form)
     registrado_ok = False
 
@@ -72,6 +93,10 @@ def alta_muchos_productos():
 
 @app.route("/admin_profile/muchos_alta", methods=["POST"])
 def recibirdatos_alta_muchos_productos():
+    ok = comprobaremailpassword()
+    if ok == False:
+        return redirect(url_for("home_admin"))
+
     if "urlproducto" in request.form and "nombreproducto" in request.form:
         template_registrar_producto = FormularioRellanarMuchosProductos(request.form)
         if template_registrar_producto.validate():
@@ -90,6 +115,10 @@ def recibirdatos_alta_muchos_productos():
 
 @app.route("/admin_profile/alta", methods=["GET"])
 def alta_producto():
+    ok = comprobaremailpassword()
+    if ok == False:
+        return redirect(url_for("home_admin"))
+
     template_registrar_producto = FormularioRellanarProducto(request.form)
     registrado_ok = False
 
@@ -107,6 +136,10 @@ def alta_producto():
 
 @app.route("/admin_profile/alta", methods=["POST"])
 def recibirdatos_alta_producto():
+    ok = comprobaremailpassword()
+    if ok == False:
+        return redirect(url_for("home_admin"))
+
     if request.method == "GET":
         return redirect(url_for("alta_producto"))
 
@@ -125,13 +158,21 @@ def recibirdatos_alta_producto():
     return redirect(url_for("alta_producto"))
 
 
-@app.route("/admin_profile/baja", methods=["GET"])
-def baja_producto():
-    return render_template("bajaproducto.html")
+# @app.route("/admin_profile/baja", methods=["GET"])
+# def baja_producto():
+#
+#     if "email" not in session and "password" not in session:
+#         return redirect(url_for("home_admin"))
+#
+#     return render_template("bajaproducto.html")
 
 
 @app.route("/admin_profile/ver", methods=["GET"])
 def ver_productos():
+    ok = comprobaremailpassword()
+    if ok == False:
+        return redirect(url_for("home_admin"))
+
     resultados = managerlogica.getallproductos()
 
     return render_template("verproductos.html", resultados=resultados, maxresultados=len(resultados))
@@ -139,12 +180,16 @@ def ver_productos():
 
 @app.route("/admin_profile/opcion", methods=["POST"])
 def opciones():
+    ok = comprobaremailpassword()
+    if ok == False:
+        return redirect(url_for("home_admin"))
 
     print("opciones")
     if "opcion" in request.form:
         opcion = request.form["opcion"]
         if opcion == "guardar":
-            managerlogica.updateproducto(request.form["id"], request.form["nombreproducto"], request.form["urlproducto"])
+            managerlogica.updateproducto(request.form["id"], request.form["nombreproducto"],
+                                         request.form["urlproducto"])
         elif opcion == "borrar":
             managerlogica.deleteproducto(request.form["id"])
 
@@ -161,25 +206,27 @@ def home():
         # session.clear()
 
         ok, resultados = managerlogica.getcomprobacion(id_resultado, id_request, grupo)
+        managerlogica.borrarlistadorequests(id_request)
         if ok == True:
             # hemos acertado
             print("Acertado")
-            managerlogica.borrarlistadorequests(id_request)
+            bloquearip(request.remote_addr)
+
             return render_template("premio.html", premio=resultados)
         else:
             # hemos fallado
             print("Fallado")
             if not resultados:
-                managerlogica.borrarlistadorequests(id_request)
-                ip = None
-                if "ip" not in session:
-                    session["ip"] = request.remote_addr
-                    ip = request.remote_addr
-                else:
-                    ip = session["ip"]
-
-                managerlogica.set_tiempobloqueo(ip)
-                return render_template("abort.html", ip=ip)
+                bloquearip(request.remote_addr)
+                # ip = None
+                # if "ip" not in session:
+                #     session["ip"] = request.remote_addr
+                #     ip = request.remote_addr
+                # else:
+                #     ip = session["ip"]
+                #
+                # managerlogica.set_tiempobloqueo(ip)
+                return render_template("abort.html", ip=request.remote_addr)
 
             return render_template("index.html",
                                    productosprincipales=resultados,
@@ -214,7 +261,7 @@ def home():
 def recibirproductoseleccionado():
     if "id_resultado" in request.form and "id_request" in request.form:
         try:
-            id_resultado = int(request.form["id_resultado"])
+            id_resultado = int(float(request.form["id_resultado"]))
         except ValueError:
             raise Exception("Conversion fallida {0}".format(request.form["id_resultado"]))
 
@@ -233,6 +280,23 @@ def reset_tiempo():
     else:
         managerlogica.reset_tiempo(request.remote_addr)
     return redirect(url_for("home"))
+
+
+def comprobaremailpassword():
+    if "email" not in session or "password" not in session:
+        return False
+    elif "email" in session and "password" in session:
+        ok = managerlogica.comprobaradmin(session["email"], session["password"])
+        return ok
+    return False
+
+
+def bloquearip(ip_remota):
+    if "ip" not in session:
+        session["ip"] = ip_remota
+        managerlogica.set_tiempobloqueo(ip_remota)
+    else:
+        managerlogica.set_tiempobloqueo(session["ip"])
 
 
 if __name__ == '__main__':

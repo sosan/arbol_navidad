@@ -44,6 +44,10 @@ class ManagerLogica:
 
         return insertadostodos, listado_resultados
 
+    def getallproductos(self):
+        resultados = self.managermongo.getallproductos()
+        return resultados
+
     def getproductos(self, cantidadproductos, productosrelleno, id_request):
         ok, maxcantidad = self.managermongo.getcantidadproductos()
         if ok == False:
@@ -152,3 +156,8 @@ class ManagerLogica:
         else:
             ok = self.managermongo.set_tiempbloqueo(ip)
             return ok
+
+
+    def comprobaradmin(self, usuario, password):
+        ok = self.managermongo.comprobaradmin(usuario, password)
+        return ok

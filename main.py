@@ -28,7 +28,23 @@ managerlogica = ManagerLogica()
 
 @app.route("/admin", methods=["GET"])
 def home_admin():
-    return render_template("admin_login.html")
+    formulariologin = FormularioLogin(request.form)
+    return render_template("admin_login.html", formulario=formulariologin)
+
+
+@app.route("/admin", methods=["POST"])
+def recibir_login_admin():
+    formulariologin = FormularioLogin(request.form)
+    if formulariologin.validate():
+        ok = managerlogica.comprobaradmin(request.form["emailLogin"], request.form["passwordLogin"])
+        if ok == True:
+            # pa delante
+            return redirect(url_for("admin_profile"))
+        else:
+            # 3 intentos y pa casa
+            pass
+
+    return redirect(url_for("home_admin"))
 
 
 @app.route("/admin_profile", methods=["GET"])
@@ -116,20 +132,31 @@ def baja_producto():
 
 @app.route("/admin_profile/ver", methods=["GET"])
 def ver_productos():
-    return render_template("verproductos.html")
+    resultados = managerlogica.getallproductos()
+
+    return render_template("verproductos.html", resultados=resultados, maxresultados=len(resultados))
+
+
+@app.route("/admin_profile/opcion", methods=["POST"])
+def opciones():
+
+    print("opciones")
+    if "guardar" in request.form:
+        pass
+    elif "borrar" in request.form:
+        pass
+
+    return redirect(url_for("ver_productos"))
 
 
 @app.route("/", methods=["GET"])
 def home():
-
-
     if "id_request" in session:
 
         id_request = session.pop("id_request")
         id_resultado = session.pop("id_resultado")
         grupo = session.pop("grupo")
         # session.clear()
-
 
         ok, resultados = managerlogica.getcomprobacion(id_resultado, id_request, grupo)
         if ok == True:
@@ -152,13 +179,11 @@ def home():
                 managerlogica.set_tiempobloqueo(ip)
                 return render_template("abort.html", ip=ip)
 
-
             return render_template("index.html",
                                    productosprincipales=resultados,
                                    maxproductosprincipales=len(resultados),
                                    id_request=id_request
                                    )
-
 
     ip = None
     if "ip" not in session:
@@ -169,7 +194,6 @@ def home():
 
     if managerlogica.get_tiempobloqueo(ip) == False:
         return render_template("abort.html", ip=ip)
-
 
     id_request = str(uuid.uuid4())
 

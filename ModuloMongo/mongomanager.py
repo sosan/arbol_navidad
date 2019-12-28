@@ -176,6 +176,18 @@ class ManagerMongoDb:
 
         return False
 
+    def comprobaradmin(self, usuario, password):
+        resultado = self.cursorAyudas.find_one({"usuario": usuario, "password": password}, {"_id": False})
+        if resultado != None:
+            return True
+        return False
+
+    def getallproductos(self):
+        resultados = list(self.cursor.find({}))
+        return resultados
+
+
+
 
 managermongo = ManagerMongoDb()
 managermongo.conectDB("pepito", "pepito", "cluster0-6oq5a.gcp.mongodb.net/test?retryWrites=true&w=majority",

@@ -68,9 +68,9 @@ class FormularioLogin(Form):
             min=3, max=10, message="Clave entre 3 y 10 caracteres")
     ], description="Password")
 
-    confirmPasswordLogin = PasswordField("Repite Password: ", validators=[
-        validators.data_required(
-            message="Estas obligado a rellenar este campo"),
-        validators.equal_to("passwordLogin", "Las contraseñas deben ser iguales")
-
-    ], description="Repite Password")
+    # confirmPasswordLogin = PasswordField("Repite Password: ", validators=[
+    #     validators.data_required(
+    #         message="Estas obligado a rellenar este campo"),
+    #     validators.equal_to("passwordLogin", "Las contraseñas deben ser iguales")
+    #
+    # ], description="Repite Password")

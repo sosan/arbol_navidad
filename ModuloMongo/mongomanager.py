@@ -186,7 +186,33 @@ class ManagerMongoDb:
         resultados = list(self.cursor.find({}))
         return resultados
 
+    def updateproducto(self, fecha, idproducto, nombreproducto, urlproducto, urlimagenproducto, h, v):
 
+        ok = self.cursor.update_one({"_id": ObjectId(idproducto)}, {"$set":
+            {
+                "fecha_mod": fecha,
+                "nombreproducto": nombreproducto,
+                "urlproducto": urlproducto,
+                "urlimagenproducto": urlimagenproducto,
+                "h": h,
+                "v": v
+
+            }})
+        if ok.modified_count == 1:
+            return True
+        return False
+
+    def deleteproducto(self, idproducto):
+        ok = self.cursor.delete_one({"_id": ObjectId(idproducto)})
+        if ok.deleted_count == 1:
+
+            ok = self.cursorAyudas.update_one(
+                {"_id": "contador"},
+                {"$inc": {"cantidadproductos": -1}}
+            )
+            if ok.modified_count == 1:
+                return True
+        return False
 
 
 managermongo = ManagerMongoDb()

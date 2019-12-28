@@ -141,10 +141,12 @@ def ver_productos():
 def opciones():
 
     print("opciones")
-    if "guardar" in request.form:
-        pass
-    elif "borrar" in request.form:
-        pass
+    if "opcion" in request.form:
+        opcion = request.form["opcion"]
+        if opcion == "guardar":
+            managerlogica.updateproducto(request.form["id"], request.form["nombreproducto"], request.form["urlproducto"])
+        elif opcion == "borrar":
+            managerlogica.deleteproducto(request.form["id"])
 
     return redirect(url_for("ver_productos"))
 

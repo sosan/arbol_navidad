@@ -157,6 +157,26 @@ class ManagerLogica:
             ok = self.managermongo.set_tiempbloqueo(ip)
             return ok
 
+    def updateproducto(self, idproducto, nombreproducto, urlproducto):
+        fecha = datetime.utcnow()
+
+        ok, urlimagenproducto, ht, vt = self.managerweb.getProducto(urlproducto)
+        if ok == False:
+            return False
+        try:
+            h = int(int(ht) // 4)
+            v = int(int(vt) // 4)
+        except ValueError:
+            raise Exception("No se ha podido convertir en int ht={0} vt={1}".format(ht, vt))
+
+        ok = self.managermongo.updateproducto(fecha, idproducto,
+                                              nombreproducto, urlproducto, urlimagenproducto, h, v)
+
+        return ok
+
+    def deleteproducto(self, idproducto):
+        ok = self.managermongo.deleteproducto(idproducto)
+        return ok
 
     def comprobaradmin(self, usuario, password):
         ok = self.managermongo.comprobaradmin(usuario, password)

@@ -181,3 +181,11 @@ class ManagerLogica:
     def comprobaradmin(self, usuario, password):
         ok = self.managermongo.comprobaradmin(usuario, password)
         return ok
+
+    def getvisibilidad(self):
+        resultado = self.managermongo.getvisibilidad()
+        return resultado
+
+    def updatevisibilidad(self, visibilidad):
+        ok = self.managermongo.updatevisibilidad(visibilidad)
+        return ok

@@ -9,7 +9,6 @@
 
 from flask import Flask
 from flask import session
-from flask import abort
 from flask import render_template
 from flask import request
 from flask import redirect
@@ -24,8 +23,6 @@ app = Flask(__name__)
 bootstrap = Bootstrap(app)
 app.secret_key = "sescreto"
 managerlogica = ManagerLogica()
-
-VISIBILIDAD = 100
 
 
 @app.route("/admin", methods=["GET"])
@@ -200,15 +197,18 @@ def opciones():
 
 @app.route("/admin_profile/visibilidad", methods=["GET"])
 def ver_visibilidad():
-    return render_template("visibilidadproductosprincipales.html", visibilidad=VISIBILIDAD)
+    visibilidad = managerlogica.getvisibilidad()
+    return render_template("visibilidadproductosprincipales.html", visibilidad=visibilidad)
 
 
 @app.route("/admin_profile/temporeuta", methods=["POST"])
 def cambiar_visibilidad():
 
     if "visibilidad" in request.form:
-        global VISIBILIDAD
-        VISIBILIDAD = int(request.form["visibilidad"])
+        try:
+            managerlogica.updatevisibilidad(int(request.form["visibilidad"]))
+        except ValueError:
+            raise Exception("Conversion no realizada correctamente: {0}".format(request.form["visibilidad"]))
 
     return redirect(url_for("ver_visibilidad"))
 
@@ -237,11 +237,13 @@ def home():
                 managerlogica.borrarlistadorequests(id_request)
                 return render_template("abort.html", ip=request.remote_addr)
 
+            visibilidad = managerlogica.getvisibilidad()
+
             return render_template("index.html",
                                    productosprincipales=resultados,
                                    maxproductosprincipales=len(resultados),
                                    id_request=id_request,
-                                   visibilidad=VISIBILIDAD
+                                   visibilidad=visibilidad
                                    )
 
     ip = None
@@ -258,11 +260,12 @@ def home():
 
     productosprincipales = managerlogica.getproductos(cantidadproductos=3, productosrelleno=3, id_request=id_request)
     if productosprincipales is not None:
+        visibilidad = managerlogica.getvisibilidad()
         return render_template("index.html",
                                productosprincipales=productosprincipales,
                                maxproductosprincipales=len(productosprincipales),
                                id_request=id_request,
-                               visibilidad=VISIBILIDAD
+                               visibilidad=visibilidad
                                )
 
     return render_template("index.html")

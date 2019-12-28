@@ -214,6 +214,18 @@ class ManagerMongoDb:
                 return True
         return False
 
+    def getvisibilidad(self):
+        resultado = self.cursorAyudas.find_one({"_id": "id_visibilidad"}, {"_id": False})
+        if resultado != None:
+            return resultado["visibilidad"]
+        return 100
+
+    def updatevisibilidad(self, visibilidad):
+        resultado = self.cursorAyudas.update_one({"_id": "id_visibilidad"}, {"$set": {"visibilidad": visibilidad}})
+        if resultado.modified_count == 1:
+            return True
+        return False
+
 
 managermongo = ManagerMongoDb()
 managermongo.conectDB("pepito", "pepito", "cluster0-6oq5a.gcp.mongodb.net/test?retryWrites=true&w=majority",

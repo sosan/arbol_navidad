@@ -535,9 +535,11 @@ padding: 0.4rem 0.4rem;
 .posicion_texto_admin
 {
     left: 1%;
-    top: 0%;
+    top: 78vh;
     position: absolute;
     z-index:10;
+    font-size: large;
+    color: white;
 
 }
 

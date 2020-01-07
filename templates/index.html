@@ -9,10 +9,16 @@
 
 
 {% block content %}
+{#<div class="container-fluid sinoverflow">#}
+<div class="container-fluid sinoverflow  bounce-in-bck">
+        <div class="row row_masalto">
+            <div class="fila_izquierda">
+                <div class="col-xs-2 sin-col-xs-2">
+                    <div class="rifa">
+                        <img src="{{ url_for("static", filename="images/rifa.png") }}"  class="img-responsive " width="500">
+                         <div class="bolas">
+                            <img src="{{ url_for("static", filename="images/bolas.svg") }}"  class="img-responsive " width="500">
 
-    <div class="container ">
-        <div class="vertical-align posicionarbol bounce-in-bck">
-            <img src="{{ url_for("static", filename="images/arbol.svg") }}" class="center-block ">
             {% if productosprincipales %}
                 {% set ns = namespace(countprincipales = 0) %}
                 {% set nsgrupos = namespace(countgrupos = 0) %}
@@ -25,18 +31,23 @@
                         <input type="hidden" name="grupo" value="{{ nsgrupos.countgrupos }}">
                         <input type="hidden" name="id_request" value="{{ id_request }}">
                         <input type="hidden" name="id_resultado" value="{{ productosprincipales[i].id_auto }}">
-                        <input type="image" class="posicion_otrosproductos{{ i }}" name="" id="boton_imagen{{ i }}"
-                               onclick="boton_grupo_{{ nsgrupos.countgrupos }}(this)" src="{{ productosprincipales[i].urlimagenproducto }}" height="100" width="100">
+                        <input type="image"  name="" id="boton_imagen{{ i }}" class="posicion_otrosproductos{{ i }}"
+                               onclick="boton_grupo_{{ nsgrupos.countgrupos }}(this)" src="{{ productosprincipales[i].urlimagenproducto }}">
                     </form>
                     {% else %}
-                        <img class="posicion_otrosproductos{{ i }}" name="" id="boton_imagen{{ i }}" src="{{ url_for("static", filename="images/error.png") }}" height="100" width="100">
+                        <img class="posicion_otrosproductos{{ i }}" name=""
+                             id="boton_imagen{{ i }}" src="{{ url_for("static", filename="images/error.png") }}">
 
                     {% endif %}
                     {% if productosprincipales[i].principal == True %}
                         {% set ns.countprincipales = ns.countprincipales + 1 %}
-                        <div class="posicion_texto{{ ns.countprincipales }}">¿?</div>
+
                         <div class="posicion_productoprincipal{{ ns.countprincipales }}" style="filter: brightness({{ visibilidad }}%)">
-                            <img src="{{ productosprincipales[i].urlimagenproducto }}" height="{{ productosprincipales[i].h }}" width="{{ productosprincipales[i].v }}">
+                            <img src="{{ productosprincipales[i].urlimagenproducto }}"
+                                 width="100"
+{#                                      height="{{ productosprincipales[i].h }}" width="{{ productosprincipales[i].v }}"#}
+                            >
+                            <div class="posicion_texto{{ ns.countprincipales }} text-center">¿?</div>
 {#                        {{ productosprincipales[i].urlimagenproducto }}#}
 {#                        {{ url_for("static", filename="images/pixel.png") }}#}
                         </div>
@@ -52,8 +63,36 @@
                     </form>
                 </div>
             {% endif %}
+
+{#                        <div class="posicion_productoprincipal2" style="filter: brightness(30%)">#}
+{#                            <img src="//sgfm.elcorteingles.es/SGFM/dctm/MEDIA03/201904/09/00115214803288____6__640x640.jpg" width="100">#}
+{#                            <div class="posicion_texto3 text-center">¿?</div>#}
+{#                        </div>#}
+
+
+                    </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="fila_derecha">
+                 <div class="col-xs2" >
+                <div class="burbuja">
+                <img src="{{ url_for("static", filename="images/burbuja.svg") }}" class="img-responsive " width="600">
+
+                </div>
+                <div class="persona">
+                <img src="{{ url_for("static", filename="images/persona.svg")}}" width="462" height="513" class="img-responsive">
+
+                </div>
+            </div>
+
+            </div>
         </div>
-    </div>
+
+
+</div>
+
     <div class="container">
         <div class="posicion_texto_admin">
             <a href="{{ url_for("home_admin") }}">Panel control Admin</a>
@@ -61,10 +100,76 @@
         </div>
     </div>
 
+
+{##}
+{#<div class="container ">#}
+{##}
+{##}
+{#        <div class="vertical-align posicionarbol bounce-in-bck">#}
+{#        <div class="vertical-align bounce-in-bck">#}
+{#            <img src="{{ url_for("static", filename="images/arbol.svg") }}" class="" width="100%">#}
+{#            {% if productosprincipales %}#}
+{#                {% set ns = namespace(countprincipales = 0) %}#}
+{#                {% set nsgrupos = namespace(countgrupos = 0) %}#}
+{#                {% for i in range(0, maxproductosprincipales) %}#}
+{#                    {% if i == 3 or i == 6 %} <!-- modificar -->#}
+{#                        {% set nsgrupos.countgrupos = nsgrupos.countgrupos + 1 %}#}
+{#                    {% endif %}#}
+{#                    {% if productosprincipales[i]["modificado"] == False %}#}
+{#                    <form method="post" action="{{ url_for("recibirproductoseleccionado") }}">#}
+{#                        <input type="hidden" name="grupo" value="{{ nsgrupos.countgrupos }}">#}
+{#                        <input type="hidden" name="id_request" value="{{ id_request }}">#}
+{#                        <input type="hidden" name="id_resultado" value="{{ productosprincipales[i].id_auto }}">#}
+{#                        <input type="image" class="posicion_otrosproductos{{ i }}" name="" id="boton_imagen{{ i }}"#}
+{#                               onclick="boton_grupo_{{ nsgrupos.countgrupos }}(this)" src="{{ productosprincipales[i].urlimagenproducto }}"#}
+{#                               width="20%">#}
+{#                    </form>#}
+{#                    {% else %}#}
+{#                        <img class="posicion_otrosproductos{{ i }}" name=""#}
+{#                             id="boton_imagen{{ i }}" src="{{ url_for("static", filename="images/error.png") }}"#}
+{#                             width="30%">#}
+{##}
+{#                    {% endif %}#}
+{#                    {% if productosprincipales[i].principal == True %}#}
+{#                        {% set ns.countprincipales = ns.countprincipales + 1 %}#}
+{##}
+{#                        <div class="posicion_productoprincipal{{ ns.countprincipales }}" style="filter: brightness({{ visibilidad }}%)">#}
+{#                            <img src="{{ productosprincipales[i].urlimagenproducto }}"#}
+{#                                 width="20%"#}
+{#                                      height="{{ productosprincipales[i].h }}" width="{{ productosprincipales[i].v }}"#}
+{#                            >#}
+{#                            <div class="posicion_texto{{ ns.countprincipales }}">¿?</div>#}
+{#                        {{ productosprincipales[i].urlimagenproducto }}#}
+{#                        {{ url_for("static", filename="images/pixel.png") }}#}
+{#                        </div>#}
+{#                    {% endif %}#}
+{#                {% endfor %}#}
+{#            {% else %}#}
+{#                <div class="posicion_nomasintentos">#}
+{#                    <h1><b>SE HAN TERMINADO LAS OPORTUNIDADES VUELVE EN 24 HORAS.</b></h1><br>#}
+{#                    <form action="{{ url_for("reset_tiempo") }}" method="post">#}
+{#                        <input type="hidden" name="id_request" value="{{ id_request }}">#}
+{#                        <input type="hidden" name="reset">#}
+{#                        <button type="submit" class="btn btn-success">RESET TIEMPO</button><br>#}
+{#                    </form>#}
+{#                </div>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#    </div>#}
+{#    <div class="container">#}
+{#        <div class="posicion_texto_admin">#}
+{#            <a href="{{ url_for("home_admin") }}">Panel control Admin</a>#}
+{#            <p>(Visibilidad de los productos se controla desde panel de control)</p>#}
+{#        </div>#}
+{#    </div>#}
+
 {% endblock %}
 
 {% block scripts %}
     <script>
+
+
+
 
         function boton_grupo_0(imagen, id) {
             var elemento1 = document.getElementById("boton_imagen0");

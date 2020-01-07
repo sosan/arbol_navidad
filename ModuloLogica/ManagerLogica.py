@@ -9,6 +9,7 @@ class ManagerLogica:
     def __init__(self):
         self.managerweb = ModuloWeb.managerWeb.ManagerWeb()
         self.managermongo = ModuloMongo.mongomanager.managermongo
+        self.visibilidad = self.getvisibilidaddb()
 
     def crearproducto(self, nombreproducto, urlproducto):
         fecha = datetime.utcnow()
@@ -183,9 +184,14 @@ class ManagerLogica:
         return ok
 
     def getvisibilidad(self):
+        return self.visibilidad
+
+    def getvisibilidaddb(self):
         resultado = self.managermongo.getvisibilidad()
         return resultado
 
     def updatevisibilidad(self, visibilidad):
         ok = self.managermongo.updatevisibilidad(visibilidad)
+        if ok == True:
+            self.visibilidad = visibilidad
         return ok

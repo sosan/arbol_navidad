@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="476" height="288" viewBox="0 0 476 288">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: #45596e;
+      }
+
+      .cls-2, .cls-4, .cls-6 {
+        fill-rule: evenodd;
+      }
+
+      .cls-3, .cls-4 {
+        fill: #6f6b50;
+      }
+
+      .cls-5, .cls-6 {
+        fill: #bd4948;
+      }
+    </style>
+  </defs>
+  <rect class="cls-1" x="60" width="3" height="88"/>
+  <path class="cls-2" d="M219.5,357A61.5,61.5,0,1,1,158,418.5,61.5,61.5,0,0,1,219.5,357Zm-5.5-5h11v6H214v-6Z" transform="translate(-158 -266)"/>
+  <rect id="Rectangle_4_copy" data-name="Rectangle 4 copy" class="cls-3" x="240" width="3" height="157"/>
+  <path id="Ellipse_3_copy" data-name="Ellipse 3 copy" class="cls-4" d="M399.5,426.233c33.966,0,61.5,28.6,61.5,63.883S433.466,554,399.5,554,338,525.4,338,490.116,365.534,426.233,399.5,426.233Zm-5.5-5.194h11v6.232H394v-6.232Z" transform="translate(-158 -266)"/>
+  <rect id="Rectangle_4_copy_2" data-name="Rectangle 4 copy 2" class="cls-5" x="413" width="3" height="125"/>
+  <path id="Ellipse_3_copy_2" data-name="Ellipse 3 copy 2" class="cls-6" d="M572.5,394A61.5,61.5,0,1,1,511,455.5,61.5,61.5,0,0,1,572.5,394Zm-5.5-5h11v6H567v-6Z" transform="translate(-158 -266)"/>
+</svg>

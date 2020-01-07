@@ -522,7 +522,15 @@ padding: 0.4rem 0.4rem;
     top: 112px;
     position: absolute;
     z-index:6;
+    color: white;
 }
+
+.premio_texto
+{
+    color: white;
+
+}
+
 
 .posicion_texto_admin
 {

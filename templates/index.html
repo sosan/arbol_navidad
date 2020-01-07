@@ -55,7 +55,7 @@
                 {% endfor %}
             {% else %}
                 <div class="posicion_nomasintentos">
-                    <h1><b>SE HAN TERMINADO LAS OPORTUNIDADES VUELVE EN 24 HORAS.</b></h1><br>
+                    <h1 class="premio_texto"><b>SE HAN TERMINADO LAS OPORTUNIDADES VUELVE EN 24 HORAS.</b></h1><br>
                     <form action="{{ url_for("reset_tiempo") }}" method="post">
                         <input type="hidden" name="id_request" value="{{ id_request }}">
                         <input type="hidden" name="reset">
